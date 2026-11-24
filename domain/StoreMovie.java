@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.List;
 
 public class StoreMovie {
@@ -55,11 +56,52 @@ public class StoreMovie {
     }
 
 
-    public void setMovies(List<Movie> movies) {
-        this.movies = movies;
+    public void addMovies(Movie movie) {
+        movies.add(movie);
     }
 
+    public Movie searchMovies(String title){
+        moviesException();
+        Movie movie=movies.getFirst();
+        for (int i = 0; i < movies.size(); i++) {
+            movie=movies.get(i);
+            if (movie.getTitle().trim().toLowerCase().equals(title.trim().toLowerCase())){
+                return movie;
+            }
+        }
+        throw new IllegalArgumentException("No se encontró una película con este nombre"); 
+    }
 
+    public List<Movie> filterCategory(String category){
+        moviesException();
+        List<Movie> categoryMovies= new ArrayList<>();
+        Movie movie=movies.getFirst();
+        for (int i = 0; i < movies.size(); i++) {
+            movie=movies.get(i);
+            if(category.trim().toLowerCase()==movie.getCategory().trim().toLowerCase()){
+                categoryMovies.add(movie);
+            }
+        }
+        if(categoryMovies.isEmpty()){
+            throw new IllegalArgumentException("No hay películas de la categoría ingresada");
+        }
+        return categoryMovies;
+    } 
+
+    public int copysAvailable(String title){
+        moviesException();
+        int j=0;
+        for (int i = 0; i < movies.size(); i++) {
+            Movie movie=movies.get(i);
+            if (movie.getTitle().trim().toLowerCase().equals(title.trim().toLowerCase())) {
+                j++;
+            }
+        }
+        if(j==0){
+            throw new IllegalArgumentException("Hay 0 copias disponibles de la película");
+        }
+        return j;
+    }
     public List<Customer> getCustomers() {
         return customers;
     }
@@ -109,5 +151,9 @@ public class StoreMovie {
         this.voucher = voucher;
     }
 
-    
+    public void moviesException(){
+        if(movies.isEmpty()){
+            throw new IllegalArgumentException("La lista de películas está vacía");
+        }
+    }
 }

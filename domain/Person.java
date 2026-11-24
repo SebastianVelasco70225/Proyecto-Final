@@ -2,6 +2,7 @@ public class Person {
     private int identificationNumber;
     private String name;
     private String adress;
+    private int age;
 
     public Person(int id, String name, String adress){
         setIdentificationNumber(id);
@@ -31,6 +32,14 @@ public class Person {
 
     public void setAdress(String adress) {
         this.adress = adress;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
     }
 
 }

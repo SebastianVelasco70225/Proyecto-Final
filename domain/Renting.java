@@ -1,8 +1,5 @@
-
-
 public class Renting {
-    
-    private StoreMovie storeMovie;
+    private MovieStore storeMovie;
     private Movie movie;
     private int idAlquiler;
     private ModelRent rent;
@@ -10,8 +7,9 @@ public class Renting {
     private int startDate;
     private int endDate;
     private boolean state;
-    public Renting(StoreMovie storeMovie, Movie movie, int idAlquiler, ModelRent rent, Customer cliente, int startDate,
-            int endDate, boolean state) {
+
+    public Renting(MovieStore storeMovie, Movie movie, int idAlquiler, ModelRent rent, Customer cliente, int startDate,
+    int endDate, boolean state) {
         this.storeMovie = storeMovie;
         this.movie = movie;
         this.idAlquiler = idAlquiler;
@@ -21,10 +19,10 @@ public class Renting {
         this.endDate = endDate;
         this.state = state;
     }
-    public StoreMovie getStoreMovie() {
+    public MovieStore getStoreMovie() {
         return storeMovie;
     }
-    public void setStoreMovie(StoreMovie storeMovie) {
+    public void setStoreMovie(MovieStore storeMovie) {
         this.storeMovie = storeMovie;
     }
     public Movie getMovie() {

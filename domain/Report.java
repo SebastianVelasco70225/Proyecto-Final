@@ -39,12 +39,6 @@ public class Report {
 
     // Method for creating a report of completed rentals
 
-    public static
-
-
-
-
-
     public int getId() {
         return id;
     }

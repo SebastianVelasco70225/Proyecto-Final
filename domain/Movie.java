@@ -4,11 +4,11 @@ public class Movie {
     private boolean available;
     private String category;
     private float rentPrice;
-    private MovieStore movieStore; 
+    private StoreMovie movieStore; 
     private int id;
     private int copyNumber;
 
-    public Movie (String title, int pegi, String category, float rentPrice, MovieStore movieStore, int id, int copyNumber){
+    public Movie (String title, int pegi, String category, float rentPrice, StoreMovie movieStore, int id, int copyNumber){
         setAvailable(true);
         setTitle(title);
         setPegi(pegi);
@@ -35,11 +35,11 @@ public class Movie {
         this.pegi = pegi;
     }
 
-    public MovieStore getMovieStore() {
+    public StoreMovie getMovieStore() {
         return movieStore;
     }
 
-    public void setMovieStore(MovieStore movieStore) {
+    public void setMovieStore(StoreMovie movieStore) {
         this.movieStore = movieStore;
     }
 

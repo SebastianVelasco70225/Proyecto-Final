@@ -1,6 +1,6 @@
 public class Employee extends Person{
     private String charge;
-    private MovieStore movieStore;
+    private StoreMovie movieStore;
     
     public Employee(int id, String name, String adress, String charge, MovieStore movieStore){
         super(id,name,adress);
@@ -16,11 +16,11 @@ public class Employee extends Person{
         this.charge = charge;
     }
 
-    public MovieStore getMovieStore(){
+    public StoreMovie getMovieStore(){
         return movieStore;
     }
 
-    public void setMovieStore(MovieStore movieStore){
+    public void setMovieStore(StoreMovie movieStore){
         this.movieStore=movieStore;
     }
 }

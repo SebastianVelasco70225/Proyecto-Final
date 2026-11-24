@@ -5,14 +5,18 @@ public class Movie {
     private String category;
     private float rentPrice;
     private MovieStore movieStore; 
+    private int id;
+    private int copyNumber;
 
-    public Movie (String title, int pegi, String category, float rentPrice, MovieStore movieStore){
+    public Movie (String title, int pegi, String category, float rentPrice, MovieStore movieStore, int id, int copyNumber){
         setAvailable(true);
         setTitle(title);
         setPegi(pegi);
         setCategory(category);
         setRentPrice(rentPrice);
         setMovieStore(movieStore);
+        setId(id);
+        setCopyNumber(copyNumber);
     }
 
     public String getTitle() {
@@ -61,6 +65,22 @@ public class Movie {
 
     public void setRentPrice(float rentPrice) {
         this.rentPrice = rentPrice;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getCopyNumber() {
+        return copyNumber;
+    }
+
+    public void setCopyNumber(int copyNumber) {
+        this.copyNumber = copyNumber;
     }
     
 }

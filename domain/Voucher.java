@@ -1,4 +1,3 @@
-
 public class Voucher {
 
     private String id;

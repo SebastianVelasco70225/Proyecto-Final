@@ -81,9 +81,7 @@ public class Report {
         return new Report(id, title, sb.toString());
 
     }
-
-
-    public int getId(){
+    public int getId() {
         return id;
     }
 

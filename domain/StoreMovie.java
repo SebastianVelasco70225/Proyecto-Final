@@ -52,6 +52,7 @@ public class StoreMovie {
 
 
     public List<Movie> getMovies() {
+        moviesException();
         return movies;
     }
 
@@ -102,23 +103,26 @@ public class StoreMovie {
         }
         return j;
     }
+
     public List<Customer> getCustomers() {
+        customerException();
         return customers;
     }
 
 
-    public void setCustomers(List<Customer> customers) {
-        this.customers = customers;
+    public void addCustomers(Customer customer) {
+        customers.add(customer);
     }
 
 
     public List<Employee> getEmployees() {
+        employeeException();
         return employees;
     }
 
 
-    public void setEmployees(List<Employee> employees) {
-        this.employees = employees;
+    public void addEmployees(Employee employee) {
+       employees.add(employee);
     }
 
 
@@ -156,4 +160,17 @@ public class StoreMovie {
             throw new IllegalArgumentException("La lista de películas está vacía");
         }
     }
+
+    public void customerException(){
+        if(customers.isEmpty()){
+            throw new IllegalArgumentException("La lista de clientes está vacía");
+        }
+    }
+
+    public void employeeException(){
+        if(employees.isEmpty()){
+            throw new IllegalArgumentException("La lista de empleados está vacía");
+        }
+    }
+
 }

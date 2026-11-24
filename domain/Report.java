@@ -6,7 +6,7 @@ public class Report {
     private String title;
     private String content;
 
-    // Constructor para crear un reporte manuelamente
+    // Constructor for creating manual report
 
     public Report (int id, String title, String content){
         setId(id);
@@ -39,13 +39,51 @@ public class Report {
 
     // Method for creating a report of completed rentals
 
-    public static
+    public static Report createReportRentign(int id, List<Renting> rentings) {
+
+        String title = "Reporte de alquileres";
+
+        if (rentings == null || rentings.isEmpty()){
+            return new Report(id, title, "No hay alquileres registrados");
+        }
+
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("Total de alquileres = ").append(rentings.size()).append("\n");
+
+        for (Renting r: rentings){
+            sb.append("- ID: ").append(r.getIdAlquiler())
+            .append(" | Cliente: ").append(r.getCliente())
+            .append(" | Películas: ").append(r.getMovie())
+            .append("\n");
+        }
+
+        return new Report(id, title, sb.toString());
+    }
+
+    // Method for creating a report of inventary movie 
+
+    public static Report createReportInventory(int id, List<Movie> movies){
+
+        String title = "Reporte de inventario de películas";
+
+        if (movies == null || movies.isEmpty()){
+            return new Report(id, title, "No hay peliculas en el catalogo");
+        }
+
+        StringBuilder sb = new StringBuilder();
+        for (Movie m: movies){
+            sb.append("- ").append(m.getTitle())
+            .append(" | Disponible: ").append(m.isAvailable() ? "Si" : "No")
+            .append("\n");
+        }
+
+        return new Report(id, title, sb.toString());
+
+    }
 
 
-
-
-
-    public int getId() {
+    public int getId(){
         return id;
     }
 

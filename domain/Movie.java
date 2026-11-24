@@ -1,6 +1,7 @@
 public class Movie {
     private String title;
     private int pegi;
+    private int release;
     private boolean available;
     private String category;
     private float rentPrice;
@@ -34,6 +35,15 @@ public class Movie {
     public void setPegi(int pegi) {
         this.pegi = pegi;
     }
+    
+    public int getRelease() {
+        return release;
+    }
+
+    public void setRelease(int release) {
+        this.release = release;
+    }
+    
 
     public StoreMovie getMovieStore() {
         return movieStore;
@@ -82,5 +92,5 @@ public class Movie {
     public void setCopyNumber(int copyNumber) {
         this.copyNumber = copyNumber;
     }
-    
+   
 }

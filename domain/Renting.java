@@ -68,5 +68,10 @@ public class Renting {
         this.state = state;
     }
 
-
+    public static boolean parentalControl(Customer customer, Movie movie){
+        if (customer.getAge() >= movie.getPegi()){
+            return true;
+        }
+        return false;
+    }
 }

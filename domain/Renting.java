@@ -99,7 +99,7 @@ public class Renting {
         return false;
     }
 
-    public float calculatelafee(int days){
+    public float calculateLateFee(int days){
         return this.rent.calculateLateFee(this, days);
     }
 

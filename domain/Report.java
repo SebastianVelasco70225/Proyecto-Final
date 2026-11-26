@@ -12,7 +12,7 @@ public class Report {
     public Report (int id, String title, String type, String content){
         setId(id);
         setTitle(title);
-        setTitle(title);
+        setTitle(type);
     }
 
     // Method for creating a financial report
@@ -41,7 +41,7 @@ public class Report {
 
     // Method for creating a report of completed rentals
 
-    public static Report createReportRentign(int id, List<Renting> rentings) {
+    public static Report createReportRenting(int id, List<Renting> rentings) {
 
         String title = "Reporte de alquileres";
         String type = "Alquileres";
@@ -56,8 +56,8 @@ public class Report {
 
         for (Renting r: rentings){
             sb.append("- ID: ").append(r.getIdRenting())
-            .append(" | Cliente: ").append(r.getCustomer())
-            .append(" | Películas: ").append(r.getMovie())
+            .append(" | Cliente: ").append(r.getCustomer().getName())
+            .append(" | Películas: ").append(r.getMovie().getTitle())
             .append("\n");
         }
 

@@ -2,8 +2,8 @@ public class Employee extends Person{
     private String charge;
     private StoreMovie movieStore;
     
-    public Employee(int id, String name, String adress, String charge, StoreMovie movieStore){
-        super(id,name,adress);
+    public Employee(int id,int age, String name, String adress, String charge, StoreMovie movieStore){
+        super(id,age,name,adress);
         setCharge(charge);
         setMovieStore(movieStore);
     }

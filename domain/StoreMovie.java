@@ -19,6 +19,7 @@ public class StoreMovie {
         setName(name);
         setNit(nit);
         setAddress(address);
+        setBaseprice(basePrice);
     }
 
     public void setBaseprice(float basePrice){
@@ -90,12 +91,6 @@ public class StoreMovie {
         employees.add(employee);
     }
     
-    
-    public List<Renting> getRentings() {
-        return rentings;
-    }
-    
-    
     public void setRentings(List<Renting> rentings) {
         this.rentings = rentings;
     }
@@ -116,9 +111,6 @@ public class StoreMovie {
     }
     
     
-    public void setVoucher(List<Voucher> voucher) {
-        this.voucher = voucher;
-    }
     public void addMovies(Movie movie) {
         movies.add(movie);
     }
@@ -133,6 +125,8 @@ public class StoreMovie {
                 ModelRent rent = new ModelRent(this.basePrice);
 
                 int amountRent = rentings.size() + 1;
+
+                movie.setAvailable(false);
 
                 Renting newRenting = new Renting(this, movie, amountRent, rent, customer, days);
                 this.rentings.add(newRenting);
@@ -160,7 +154,7 @@ public class StoreMovie {
         }
 
         if (outDays > renting.getRentalDays()){
-            latefee = renting.calculatelafee(outDays);
+            latefee = renting.calculateLateFee(outDays);
             renting.setReturnLate(true);
             renting.addLateFee(latefee);
 
@@ -198,7 +192,7 @@ public class StoreMovie {
     }
 
     //Method for filtering by inactive status
-    public List<Renting> filerInactiveRentals(){
+    public List<Renting> filterInactiveRentals(){
         rentingException();
         List <Renting> temporalList = new ArrayList<>(); 
         for (Renting r : this.rentings){
@@ -215,7 +209,7 @@ public class StoreMovie {
         rentingException();
         List <Renting> temporalList = new ArrayList<>();
         
-        for (Renting r: filerInactiveRentals()){
+        for (Renting r: filterInactiveRentals()){
             if(r.getReturnLate() == true){
                 temporalList.add(r);
             }
@@ -228,11 +222,10 @@ public class StoreMovie {
     
     public Movie searchMovies(String title){
         moviesException();
-        Movie movie = movies.getFirst();
-        for (int i = 0; i < movies.size(); i++) {
-            movie = movies.get(i);
-            if (movie.getTitle().trim().toLowerCase().equals(title.trim().toLowerCase())){
-                return movie;
+        
+        for (Movie m: this.movies) {
+            if (m.getTitle().trim().equalsIgnoreCase(title.trim())){
+                return m;
             }
         }
         throw new IllegalArgumentException("No se encontró una película con este nombre"); 
@@ -240,12 +233,12 @@ public class StoreMovie {
     
     public List<Movie> filterCategory(String category){
         moviesException();
+
         List<Movie> categoryMovies= new ArrayList<>();
-        Movie movie=movies.getFirst();
-        for (int i = 0; i < movies.size(); i++) {
-            movie=movies.get(i);
-            if(category.trim().toLowerCase()==movie.getCategory().trim().toLowerCase()){
-                categoryMovies.add(movie);
+
+        for (Movie m : this.movies) {
+            if(m.getCategory().trim().equalsIgnoreCase(category.trim())){
+                categoryMovies.add(m);
             }
         }
         if(categoryMovies.isEmpty()){

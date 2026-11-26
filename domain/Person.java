@@ -1,13 +1,14 @@
 public class Person {
     private int identificationNumber;
     private String name;
-    private String adress;
+    private String address;
     private int age;
 
-    public Person(int id, String name, String adress){
+    public Person(int id, int age, String name, String adress){
         setIdentificationNumber(id);
         setName(name);
-        setAdress(adress);
+        setAddress(adress);
+        setAge(age);
     }
 
     public int getIdentificationNumber() {
@@ -26,12 +27,12 @@ public class Person {
         this.name = name;
     }
 
-    public String getAdress() {
-        return adress;
+    public String getAddress() {
+        return address;
     }
 
-    public void setAdress(String adress) {
-        this.adress = adress;
+    public void setAddress(String adress) {
+        this.address = adress;
     }
 
     public int getAge() {

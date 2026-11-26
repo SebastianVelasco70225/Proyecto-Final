@@ -7,6 +7,7 @@ public class Renting {
     private int rentalDays;
     private boolean state;
     private float totalCost;
+    private boolean returnLate;
 
     public Renting(StoreMovie storeMovie, Movie movie, int idAlquiler, ModelRent modelRent,Customer customer, int days) {
         if (movie == null || customer == null ){
@@ -31,6 +32,7 @@ public class Renting {
         this.rent = modelRent;
         setRentalDays(days);
         this.state = true;
+        this.returnLate = false;
 
         this.totalCost =this.rent.calculateTotalPrice(movie, days);
     }
@@ -80,6 +82,14 @@ public class Renting {
     }
     public void setTotalCost(int totalCost){
         this.totalCost = totalCost;
+    }
+
+    public void setReturnLate(boolean returnLate){
+        this.returnLate = returnLate;
+    }
+
+    public boolean getReturnLate(){
+        return this.returnLate;
     }
 
     public boolean parentalControl(Customer customer, Movie movie){

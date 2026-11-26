@@ -21,7 +21,9 @@ public class ModelRent {
     
     public float calculateTotalPrice(Movie movie, int days){
         float totalPrice = 0 ;
-        return totalPrice = priceDays(days) + priceRelease(movie);
+        totalPrice = priceDays(days) + priceRelease(movie);
+        return totalPrice;
+
     }
 
     public float priceRelease(Movie movie){

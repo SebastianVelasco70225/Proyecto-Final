@@ -145,6 +145,8 @@ public class StoreMovie {
             }
     }
 
+    //Returns control method
+
     public float returnRenting (int idRentig, int outDays){
         validateNumber(outDays);
         validateNumber(idRentig);
@@ -159,6 +161,7 @@ public class StoreMovie {
 
         if (outDays > renting.getRentalDays()){
             latefee = renting.calculatelafee(outDays);
+            renting.setReturnLate(false);
             renting.addLateFee(latefee);
 
             int idVoucher = voucher.size() + 1;
@@ -171,16 +174,42 @@ public class StoreMovie {
             return latefee;
     }
 
+    //Method of serach by id
+
     public Renting searchRenting (int id){
         validateNumber(id);
 
-        for(Renting r: rentings){
+        for(Renting r: this.rentings){
             if(r.getIdRenting() == id){
                 return r;
             }
         }
         throw new IllegalArgumentException("No se encontro el alquiler");
     }
+
+    //Method for filtering by active status
+    public List<Renting> filterActiveRentals(List<Renting> activeRentings){
+        rentingException();
+        for(Renting r : this.rentings){
+            if (r.isState() == true){
+                activeRentings.add(r);
+            }
+        }
+        return activeRentings;
+    }
+
+    //Method for filtering by inactive status
+    public List<Renting> filerInactiveRentals(List<Renting> inactiveRentings){
+        rentingException();
+        for (Renting r : this.rentings){
+            if (r.isState() == false){
+                inactiveRentings.add(r);
+            }
+        }
+        return inactiveRentings;
+    }
+
+    //Method for
 
 
     // Movie control methods
@@ -245,6 +274,12 @@ public class StoreMovie {
     public void employeeException(){
         if(employees.isEmpty()){
             throw new IllegalArgumentException("La lista de empleados está vacía");
+        }
+    }
+
+    public void rentingException(){
+        if(rentings.isEmpty()){
+            throw new IllegalArgumentException("La lista de alquileres esta vacá");
         }
     }
     

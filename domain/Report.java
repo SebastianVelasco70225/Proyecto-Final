@@ -52,8 +52,8 @@ public class Report {
         sb.append("Total de alquileres = ").append(rentings.size()).append("\n");
 
         for (Renting r: rentings){
-            sb.append("- ID: ").append(r.getIdAlquiler())
-            .append(" | Cliente: ").append(r.getCliente())
+            sb.append("- ID: ").append(r.getIdRenting())
+            .append(" | Cliente: ").append(r.getCustomer())
             .append(" | Películas: ").append(r.getMovie())
             .append("\n");
         }

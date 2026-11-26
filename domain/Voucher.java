@@ -1,25 +1,25 @@
 public class Voucher {
 
-    private String id;
+    private int id;
     private Renting renting;
     private float totalAmount;
 
-    public Voucher(String id, Renting renting, float totalAmount ){
+    public Voucher(int id, Renting renting, float totalAmount ){
         setId(id);
         setRenting(renting);
         setTotalAmount(totalAmount);
     }
 
-    public String getId() {
-        return id;
+    public int getId() {
+        return this.id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 
     public Renting getRenting() {
-        return renting;
+        return this.renting;
     }
 
     public void setRenting(Renting renting) {
@@ -27,7 +27,7 @@ public class Voucher {
     }
 
     public float getTotalAmount() {
-        return totalAmount;
+        return this.totalAmount;
     }
 
     public void setTotalAmount(float totalAmount) {

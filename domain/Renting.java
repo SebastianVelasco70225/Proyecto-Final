@@ -1,23 +1,37 @@
 public class Renting {
     private StoreMovie storeMovie;
     private Movie movie;
-    private int idAlquiler;
+    private int idRenting;
     private ModelRent rent;
-    private Customer cliente;
-    private int startDate;
-    private int endDate;
+    private Customer customer;
+    private int rentalDays;
     private boolean state;
 
-    public Renting(StoreMovie storeMovie, Movie movie, int idAlquiler, ModelRent rent, Customer cliente, int startDate,
-    int endDate, boolean state) {
-        this.storeMovie = storeMovie;
-        this.movie = movie;
-        this.idAlquiler = idAlquiler;
-        this.rent = rent;
-        this.cliente = cliente;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.state = state;
+    public Renting(StoreMovie storeMovie, Movie movie, int idAlquiler, ModelRent modelRent,Customer customer, int days, boolean state) {
+        if (movie == null || customer == null ){
+            throw new IllegalArgumentException("Error: el cliente y la pelicula son obligatorios");
+        }
+
+        if(days <= 0 ){
+            throw new IllegalArgumentException("Error: el numero de dias debe de ser mayor de 0 ");
+        }
+
+        if(parentalControl(customer, movie)){
+            throw new IllegalArgumentException(
+                "Control Parental: " + customer.getName() + " tiene: " + customer.getAge() +
+                " años y la pelicula requiere mínimo " + movie.getPegi()
+            );
+        }
+
+        setStoreMovie(storeMovie);
+        setMovie(movie);
+        setIdRenting(idAlquiler);
+        setCustomer(customer);
+        this.rent = modelRent;
+        setRentalDays(days);
+        setState(state);
+
+        this.rent.calculateTotalPrice(movie, days);
     }
     public StoreMovie getStoreMovie() {
         return storeMovie;
@@ -31,35 +45,17 @@ public class Renting {
     public void setMovie(Movie movie) {
         this.movie = movie;
     }
-    public int getIdAlquiler() {
-        return idAlquiler;
+    public int getIdRenting() {
+        return idRenting;
     }
-    public void setIdAlquiler(int idAlquiler) {
-        this.idAlquiler = idAlquiler;
+    public void setIdRenting(int idAlquiler) {
+        this.idRenting = idAlquiler;
     }
-    public ModelRent getRent() {
-        return rent;
+    public Customer getCustomer() {
+        return customer;
     }
-    public void setRent(ModelRent rent) {
-        this.rent = rent;
-    }
-    public Customer getCliente() {
-        return cliente;
-    }
-    public void setCliente(Customer cliente) {
-        this.cliente = cliente;
-    }
-    public int getStartDate() {
-        return startDate;
-    }
-    public void setStartDate(int startDate) {
-        this.startDate = startDate;
-    }
-    public int getEndDate() {
-        return endDate;
-    }
-    public void setEndDate(int endDate) {
-        this.endDate = endDate;
+    public void setCustomer(Customer cliente) {
+        this.customer = cliente;
     }
     public boolean isState() {
         return state;
@@ -67,9 +63,19 @@ public class Renting {
     public void setState(boolean state) {
         this.state = state;
     }
+    public void setRentalDays(int days){
+        this.rentalDays = days;
+    }
+    public int getRentalDays(){
+        return this.rentalDays;
+    }
 
-    public static boolean parentalControl(Customer customer, Movie movie){
-        if (customer.getAge() >= movie.getPegi()){
+    public float getFinalPrice(){
+        return this.rent.getTotalPrice();
+    }
+
+    public boolean parentalControl(Customer customer, Movie movie){
+        if (customer.getAge() < movie.getPegi()){
             return true;
         }
         return false;

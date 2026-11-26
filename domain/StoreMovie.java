@@ -125,14 +125,16 @@ public class StoreMovie {
 
     //Renting control methods
 
-    public void  createRenting(Movie movie, Customer customer, int days, boolean stateRenting){
-        try {
+    public void  createRenting(Movie movie, Customer customer, int days ){
+        
+            validateNumber(days);
+
             if (movie.isAvailable()){
                 ModelRent rent = new ModelRent(this.basePrice);
 
                 int amountRent = rentings.size() + 1;
 
-                Renting newRenting = new Renting(this, movie, amountRent, rent, customer, days, stateRenting);
+                Renting newRenting = new Renting(this, movie, amountRent, rent, customer, days);
                 this.rentings.add(newRenting);
 
                 Voucher newVoucher = new Voucher(amountRent, newRenting, newRenting.getFinalPrice());
@@ -141,9 +143,43 @@ public class StoreMovie {
             } else {
                 throw new IllegalArgumentException("Error: La película no esta disponible");
             }
-        } catch (IllegalArgumentException e) {
-            System.out.println(e.getMessage());
+    }
+
+    public float returnRenting (int idRentig, int outDays){
+        validateNumber(outDays);
+        validateNumber(idRentig);
+
+        float latefee = 0;
+
+        Renting renting = searchRenting(idRentig);
+
+        if (!renting.isState()){
+            throw new IllegalArgumentException("Error: Este alquiler ya fue devuelto");
         }
+
+        if (outDays > renting.getRentalDays()){
+            latefee = renting.calculatelafee(outDays);
+            renting.addLateFee(latefee);
+
+            int idVoucher = voucher.size() + 1;
+            Voucher newVoucher = new Voucher(idVoucher, renting, latefee);
+            this.voucher.add(newVoucher);
+        }
+            renting.getMovie().setAvailable(true);
+            renting.setState(false);
+
+            return latefee;
+    }
+
+    public Renting searchRenting (int id){
+        validateNumber(id);
+
+        for(Renting r: rentings){
+            if(r.getIdRenting() == id){
+                return r;
+            }
+        }
+        throw new IllegalArgumentException("No se encontro el alquiler");
     }
 
 
@@ -151,9 +187,9 @@ public class StoreMovie {
     
     public Movie searchMovies(String title){
         moviesException();
-        Movie movie=movies.getFirst();
+        Movie movie = movies.getFirst();
         for (int i = 0; i < movies.size(); i++) {
-            movie=movies.get(i);
+            movie = movies.get(i);
             if (movie.getTitle().trim().toLowerCase().equals(title.trim().toLowerCase())){
                 return movie;
             }
@@ -212,4 +248,9 @@ public class StoreMovie {
         }
     }
     
+    public void validateNumber(int number){
+        if (number <= 0) {
+            throw new IllegalArgumentException("Error: el numero ingresado no puede ser menor a 0");
+        }
+    }
 }

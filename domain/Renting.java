@@ -6,8 +6,9 @@ public class Renting {
     private Customer customer;
     private int rentalDays;
     private boolean state;
+    private float totalCost;
 
-    public Renting(StoreMovie storeMovie, Movie movie, int idAlquiler, ModelRent modelRent,Customer customer, int days, boolean state) {
+    public Renting(StoreMovie storeMovie, Movie movie, int idAlquiler, ModelRent modelRent,Customer customer, int days) {
         if (movie == null || customer == null ){
             throw new IllegalArgumentException("Error: el cliente y la pelicula son obligatorios");
         }
@@ -29,9 +30,9 @@ public class Renting {
         setCustomer(customer);
         this.rent = modelRent;
         setRentalDays(days);
-        setState(state);
+        this.state = true;
 
-        this.rent.calculateTotalPrice(movie, days);
+        this.totalCost =this.rent.calculateTotalPrice(movie, days);
     }
     public StoreMovie getStoreMovie() {
         return storeMovie;
@@ -71,7 +72,14 @@ public class Renting {
     }
 
     public float getFinalPrice(){
-        return this.rent.getTotalPrice();
+        return this.totalCost;
+    }
+
+    public float getTotalCost(){
+        return this.totalCost;
+    }
+    public void setTotalCost(int totalCost){
+        this.totalCost = totalCost;
     }
 
     public boolean parentalControl(Customer customer, Movie movie){
@@ -79,5 +87,13 @@ public class Renting {
             return true;
         }
         return false;
+    }
+
+    public float calculatelafee(int days){
+        return this.rent.calculateLateFee(this, days);
+    }
+
+    public void addLateFee(float lateFee){
+        this.totalCost += lateFee;
     }
 }

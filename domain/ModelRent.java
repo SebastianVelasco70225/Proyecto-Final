@@ -2,7 +2,6 @@
 
 public class ModelRent {
     private float basePrice;
-    private float totalPrice;
 
     public ModelRent(float basePrice){
         setBasePrice(basePrice);
@@ -20,23 +19,22 @@ public class ModelRent {
         this.basePrice = basePrice;
     }
     
-    public void calculateTotalPrice(Movie movie, int days){
-        this.totalPrice = priceDays(days) + priceRelease(movie);
+    public float calculateTotalPrice(Movie movie, int days){
+        float totalPrice = 0 ;
+        return totalPrice = priceDays(days) + priceRelease(movie);
     }
-    public float getTotalPrice(){
-        return this.totalPrice;
-    }
+
     public float priceRelease(Movie movie){
-        float price = 0 ;
+        float extraCost = 0 ;
         if(movie.getRelease() == 2026){
-            price = (this.basePrice + ( this.basePrice * 0.2f));
-            return price;
+            extraCost = (this.basePrice + ( this.basePrice * 0.2f));
+            return extraCost;
         } else if (movie.getRelease() < 2026 && movie.getRelease() > 2021){
-            price = this.basePrice;
-            return price;
+            extraCost = this.basePrice;
+            return extraCost;
         } 
-        price = (this.basePrice - (this.basePrice * 0.3f));
-        return price;
+        extraCost = (this.basePrice - (this.basePrice * 0.3f));
+        return extraCost;
     }
 
     public float priceDays(int days){
@@ -46,5 +44,14 @@ public class ModelRent {
             return price;
         }
         return price;
+    }
+
+    public float calculateLateFee(Renting renting, int days){
+        float extraCost = 0;
+        if (days > renting.getRentalDays()){
+            extraCost = (basePrice * 0.4f) * (days - renting.getRentalDays());
+            return extraCost;
+        }
+        return  extraCost;
     }
 }

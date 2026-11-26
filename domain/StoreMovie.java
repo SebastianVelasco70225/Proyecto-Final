@@ -161,7 +161,7 @@ public class StoreMovie {
 
         if (outDays > renting.getRentalDays()){
             latefee = renting.calculatelafee(outDays);
-            renting.setReturnLate(false);
+            renting.setReturnLate(true);
             renting.addLateFee(latefee);
 
             int idVoucher = voucher.size() + 1;
@@ -170,7 +170,6 @@ public class StoreMovie {
         }
             renting.getMovie().setAvailable(true);
             renting.setState(false);
-
             return latefee;
     }
 
@@ -199,17 +198,30 @@ public class StoreMovie {
     }
 
     //Method for filtering by inactive status
-    public List<Renting> filerInactiveRentals(List<Renting> inactiveRentings){
+    public List<Renting> filerInactiveRentals(){
         rentingException();
+        List <Renting> temporalList = new ArrayList<>(); 
         for (Renting r : this.rentings){
             if (r.isState() == false){
-                inactiveRentings.add(r);
+                temporalList.add(r);
             }
         }
-        return inactiveRentings;
+        return temporalList;
     }
 
-    //Method for
+    //Method for filtering by inactiva status and later return 
+
+    public List<Renting> filterLaterReturn(){
+        rentingException();
+        List <Renting> temporalList = new ArrayList<>();
+        
+        for (Renting r: filerInactiveRentals()){
+            if(r.getReturnLate() == true){
+                temporalList.add(r);
+            }
+        }
+        return temporalList;
+    }
 
 
     // Movie control methods

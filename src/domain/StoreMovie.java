@@ -28,7 +28,7 @@ public class StoreMovie implements Serializable {
         setBaseprice(basePrice);
     }
 
-    // Methods
+    // Setters y Getters
     public void setBaseprice(float basePrice){
         if(basePrice <= 0 ){
             throw new IllegalArgumentException("El precio base debe de ser mayor a 0");
@@ -117,15 +117,12 @@ public class StoreMovie implements Serializable {
     }
     
     
-    public void addMovies(Movie movie) {
-        movies.add(movie);
-    }
-
+    
     //Renting control methods
-
+    
     public void  createRenting(Movie movie, Customer customer, int days ){
         
-            validateNumber(days);
+        validateNumber(days);
 
             if (movie.isAvailable()){
                 ModelRent rent = new ModelRent(this.basePrice);
@@ -152,7 +149,7 @@ public class StoreMovie implements Serializable {
         validateNumber(idRentig);
 
         float latefee = 0;
-
+        
         Renting renting = searchRenting(idRentig);
 
         if (!renting.isState()){
@@ -163,7 +160,7 @@ public class StoreMovie implements Serializable {
             latefee = renting.calculateLateFee(outDays);
             renting.setReturnLate(true);
             renting.addLateFee(latefee);
-
+            
             int idVoucher = voucher.size() + 1;
             Voucher newVoucher = new Voucher(idVoucher, renting, latefee);
             this.voucher.add(newVoucher);
@@ -187,8 +184,9 @@ public class StoreMovie implements Serializable {
     }
 
     //Method for filtering by active status
-    public List<Renting> filterActiveRentals(List<Renting> activeRentings){
+    public List<Renting> filterActiveRentals(){
         rentingException();
+        List<Renting> activeRentings= new ArrayList<>();
         for(Renting r : this.rentings){
             if (r.isState() == true){
                 activeRentings.add(r);
@@ -222,15 +220,33 @@ public class StoreMovie implements Serializable {
         return temporalList;
     }
 
+    // Method for filtering rentings by a proxime end date 
+    public List<Renting> searchRentingByEndProximity(){
+        rentingException();
+        List<Renting> rentingProximeToEnd= filterActiveRentals();
+        for (Renting r: rentingProximeToEnd){
+            if(r.getRentalDays()>2){
+                rentingProximeToEnd.remove(r);
+            }
+        }
+        return rentingProximeToEnd;
+    }
     
     // Movie control methods
 
+    // Method for creating new movies and adding them to the catalog
     public void createMovies(String title, int pegi,int release, String category){
         Movie m=new Movie(title, pegi, release, category, this);
         m.setId(movies.size());
         addMovies(m);
     }
+    
+    // Method for adding movies to the catalog
+    public void addMovies(Movie movie) {
+        movies.add(movie);
+    }
 
+    // Method for searching movies by title parcial match and total match
     public List<Movie> searchMoviesByTitle(String parcialTitle, int option){
         moviesException();
         List <Movie> parcialTitleMatch= new ArrayList<>();
@@ -258,6 +274,7 @@ public class StoreMovie implements Serializable {
         return parcialTitleMatch;
     }
     
+    // Method for searching movies by ID
     public Movie searchMovieById(int id){
         if(id<0||id>=movies.size()){
             throw new IllegalArgumentException("No se encontró una película con ese ID");
@@ -292,6 +309,7 @@ public class StoreMovie implements Serializable {
         return categoryMovies;
     } 
     
+    // Method for filter Movies by availabylity
     public List<Movie> filterAvailable(int option){
         moviesException();
         List<Movie> availableMovies=new ArrayList<>();
@@ -306,17 +324,25 @@ public class StoreMovie implements Serializable {
         if(option>2||option<=0){
             throw new IllegalArgumentException("Opción inválida");
         }
+        
         if(option==1){
+            if(availableMovies.isEmpty()){
+                throw new IllegalArgumentException("No se encontraron películas disponibles");
+            }
             return availableMovies;
+        }
+        if(notAvailableMovies.isEmpty()){
+            throw new IllegalArgumentException("No se encontraron películas rentadas");
         }
         return notAvailableMovies;
     }
 
+    // Method for know the copies available of a certain movie
     public int copiesAvailable(String title){
         moviesException();
         int copies=0;
         for (Movie m: this.movies){
-            if(m.getTitle().equalsIgnoreCase(title)&&m.isAvailable()){
+            if(m.getTitle().trim().equalsIgnoreCase(title.trim())&&m.isAvailable()){
                 copies++;
             }
         }
@@ -326,6 +352,21 @@ public class StoreMovie implements Serializable {
         return copies;
     }
 
+    // Method for decission taking help, returns movies with only one copie
+    public List<Movie> moviesWithOneCopie(){
+        List<Movie> movies2=new ArrayList<>();
+        for (Movie m: this.movies){
+            if(copiesAvailable(m.getTitle())==1){
+                movies2.add(m);
+            }
+        }
+        if(movies2.isEmpty()){
+            throw new IllegalArgumentException("No hay películas con una sola copia disponible");
+        }
+        return movies2;
+    } 
+
+    // Method to eliminate movies from inventary
     public void eliminateMovie(Movie movie, int option){
         moviesException();
         if(option>2||option<=0){

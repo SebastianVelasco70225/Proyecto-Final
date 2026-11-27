@@ -4,12 +4,16 @@ import java.io.Serializable;
 public class ModelRent implements Serializable{
 
     private static final long serialVersionUID = 1L;
+
+    // Atributes
     private float basePrice;
 
+    // Constructor
     public ModelRent(float basePrice){
         setBasePrice(basePrice);
     }
 
+    // Getters and Setters
     public float getBasePrice() {
         return basePrice;
     }
@@ -22,6 +26,9 @@ public class ModelRent implements Serializable{
         this.basePrice = basePrice;
     }
     
+    // Methods
+
+    // Method for getting the total price of a renting, based on the days and the movie
     public float calculateTotalPrice(Movie movie, int days){
         float totalPrice = 0 ;
         totalPrice = priceDays(days) + priceRelease(movie);
@@ -29,6 +36,7 @@ public class ModelRent implements Serializable{
 
     }
 
+    // Method for getting the extra price based on the release year of a movie
     public float priceRelease(Movie movie){
         float extraCost = 0 ;
         if(movie.getRelease() == 2026){
@@ -42,6 +50,7 @@ public class ModelRent implements Serializable{
         return extraCost;
     }
 
+    // Method for getting the price per day of a renting
     public float priceDays(int days){
         float price = 0;
         if (days > 4 ){
@@ -51,6 +60,7 @@ public class ModelRent implements Serializable{
         return price;
     }
 
+    // Method for getting the extra price for returning the movie past the renting time
     public float calculateLateFee(Renting renting, int days){
         float extraCost = 0;
         if (days > renting.getRentalDays()){

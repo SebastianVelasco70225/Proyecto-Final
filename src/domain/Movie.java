@@ -4,6 +4,8 @@ import java.io.Serializable;
 public class Movie implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
+    // Atribute
     private String title;
     private int pegi;
     private int release;
@@ -13,6 +15,7 @@ public class Movie implements Serializable {
     private int id;
     private boolean active;
 
+    // Constructor
     public Movie (String title, int pegi,int release, String category, StoreMovie movieStore){
         setAvailable(true);
         setTitle(title);
@@ -23,6 +26,7 @@ public class Movie implements Serializable {
         this.active = true;
     }
 
+    // Getters and Setters
     public String getTitle() {
         return title;
     }
@@ -84,6 +88,9 @@ public class Movie implements Serializable {
         return active;
     }
 
+    // Methods
+
+    // Atribute for switching from active to inactive
     public void switchActive() {
         this.active = !(active);
     }

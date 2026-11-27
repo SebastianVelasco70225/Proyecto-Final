@@ -224,6 +224,7 @@ public class StoreMovie implements Serializable {
 
     
     // Movie control methods
+
     public void createMovies(String title, int pegi,int release, String category){
         Movie m=new Movie(title, pegi, release, category, this);
         m.setId(movies.size());
@@ -346,8 +347,57 @@ public class StoreMovie implements Serializable {
             movies.remove(movie);
         }
     }
+
+    public List<Renting> filterbyCustomer(String name){
+
+        List<Renting> listTemporal = new ArrayList<>();
+
+        for (Renting r : this.rentings){
+            if (r.getCustomer().getName().trim().equalsIgnoreCase(name.trim())){
+                listTemporal.add(r);
+            }
+        }
+
+        if (listTemporal.isEmpty()){
+            throw new IllegalArgumentException("El cliente no tiene alquileres");
+        }
+
+        return listTemporal;
+    }
+
+    public List<Renting> filterbyReturnDay(int days){
+        List<Renting> listTemporal = new ArrayList<>();
+        for (Renting r : this.rentings){
+            if (r.getRentalDays() == days){
+                listTemporal.add(r);
+            }
+        }
+
+        if (listTemporal.isEmpty()) {
+            throw new IllegalArgumentException("No hay rentas previstar para esa cantidad de dias");
+        }
+
+        return listTemporal;
+    }
+
+    public List<Renting> filterReturnRenting (){
+        
+        List<Renting> listTemporal = new ArrayList<>();
+
+        for(Renting r: this.rentings){
+            if (r.isState() == false) {
+                listTemporal.add(r);
+            }
+        }
+
+        if (listTemporal.isEmpty()) {
+            throw new IllegalArgumentException("No hay devoluviones registradas aun");
+        }
+
+        return listTemporal;
+    }
     
-    // Auxxiliary methods
+    // Auxiliary methods
     
     public void moviesException(){
         if(movies.isEmpty()){

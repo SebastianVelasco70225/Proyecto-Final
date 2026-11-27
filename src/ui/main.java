@@ -31,15 +31,5 @@ public class Main {
         } catch (IOException e) {
             System.out.println("Error al guardar los datos: " + e.getMessage());
         }
-
-        try {
-    StoreMovie store2 = FileManager.loadStore();
-    System.out.println("Películas: " + store.getMovies());
-    System.out.println("Clientes: " + store.getCustomers());
-    System.out.println("Alquileres: " + store.getRentings());
-    
-    } catch (IOException | ClassNotFoundException e) {
-    System.out.println("Error al leer el archivo: " + e.getMessage());
     }
-}
 }

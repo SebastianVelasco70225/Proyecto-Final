@@ -11,17 +11,15 @@ public class Movie implements Serializable {
     private String category;
     private StoreMovie movieStore; 
     private int id;
-    private int copyNumber;
+    private boolean active=true;
 
-    public Movie (String title, int pegi,int release, String category, StoreMovie movieStore, int copyNumber){
+    public Movie (String title, int pegi,int release, String category, StoreMovie movieStore){
         setAvailable(true);
         setTitle(title);
         setPegi(pegi);
         setRelease(release);
         setCategory(category);
         setMovieStore(movieStore);
-        setCopyNumber(copyNumber);
-
     }
 
     public String getTitle() {
@@ -80,20 +78,19 @@ public class Movie implements Serializable {
     public void setId(int id) {
         this.id = id;
     }
-
-    public int getCopyNumber() {
-        return copyNumber;
+    
+    public boolean isActive() {
+        return active;
     }
 
-    public void setCopyNumber(int copyNumber) {
-        this.copyNumber = copyNumber;
+    public void switchActive() {
+        this.active = !(active);
     }
 
     @Override
     public String toString() {
         return "Movie [title=" + title + ", pegi=" + pegi + ", release=" + release + ", available=" + available
-                + ", category=" + category + ", movieStore=" + movieStore + ", id=" + id + ", copyNumber=" + copyNumber
-                + ", getTitle()=" + getTitle() + "]";
+                + ", category=" + category + ", movieStore=" + movieStore + ", id=" + id+ ", getTitle()=" + getTitle() + "]";
     }
     
 }

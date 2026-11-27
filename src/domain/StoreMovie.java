@@ -6,6 +6,7 @@ import java.util.List;
 
 public class StoreMovie implements Serializable {
 
+    // Atributes
     private static  final long serialVersionUID = 1L;
     private String name;
     private String nit;
@@ -19,7 +20,7 @@ public class StoreMovie implements Serializable {
     private List<Voucher> voucher = new ArrayList<>();
 
 
-
+    // Constructor
     public StoreMovie (String name, String nit, String address, float basePrice){
         setName(name);
         setNit(nit);
@@ -27,6 +28,7 @@ public class StoreMovie implements Serializable {
         setBaseprice(basePrice);
     }
 
+    // Methods
     public void setBaseprice(float basePrice){
         if(basePrice <= 0 ){
             throw new IllegalArgumentException("El precio base debe de ser mayor a 0");
@@ -171,7 +173,7 @@ public class StoreMovie implements Serializable {
             return latefee;
     }
 
-    //Method of serach by id
+    //Method of search by id
 
     public Renting searchRenting (int id){
         validateNumber(id);
@@ -207,12 +209,11 @@ public class StoreMovie implements Serializable {
         return temporalList;
     }
 
-    //Method for filtering by inactiva status and later return 
+    //Method for filtering by inactive status and later return 
 
     public List<Renting> filterLaterReturn(){
         rentingException();
         List <Renting> temporalList = new ArrayList<>();
-        
         for (Renting r: filterInactiveRentals()){
             if(r.getReturnLate() == true){
                 temporalList.add(r);
@@ -221,28 +222,67 @@ public class StoreMovie implements Serializable {
         return temporalList;
     }
 
-
-    // Movie control methods
     
-    public Movie searchMovies(String title){
+    // Movie control methods
+    public void createMovies(String title, int pegi,int release, String category){
+        Movie m=new Movie(title, pegi, release, category, this);
+        m.setId(movies.size());
+        addMovies(m);
+    }
+
+    public List<Movie> searchMoviesByTitle(String parcialTitle, int option){
         moviesException();
-        
+        List <Movie> parcialTitleMatch= new ArrayList<>();
         for (Movie m: this.movies) {
-            if (m.getTitle().trim().equalsIgnoreCase(title.trim())){
-                return m;
+            if (parcialTitleMatch.contains(m)){
+                continue;
             }
+            if(option==1){ 
+                if (m.getTitle().trim().toLowerCase().contains(parcialTitle.trim().toLowerCase())&& m.isAvailable()){
+                parcialTitleMatch.add(m);
+            }
+            } else if(option==2){
+                if (m.getTitle().trim().toLowerCase().contains(parcialTitle.trim().toLowerCase())){
+                parcialTitleMatch.add(m);  
+            }
+            } else if (option==3){
+                if (m.getTitle().trim().toLowerCase().contains(parcialTitle.trim().toLowerCase())&&!(m.isAvailable())){
+                parcialTitleMatch.add(m);  
+            }
+            }
+    }
+        if(parcialTitleMatch.isEmpty()){
+            throw new IllegalArgumentException("No se encontró una película con este nombre");
         }
-        throw new IllegalArgumentException("No se encontró una película con este nombre"); 
+        return parcialTitleMatch;
     }
     
-    public List<Movie> filterCategory(String category){
+    public Movie searchMovieById(int id){
+        if(id<0||id>=movies.size()){
+            throw new IllegalArgumentException("No se encontró una película con ese ID");
+        }
+        return movies.get(id);
+    }
+
+    public List<Movie> filterCategory(String category, int option){
         moviesException();
-
         List<Movie> categoryMovies= new ArrayList<>();
-
         for (Movie m : this.movies) {
+            if (categoryMovies.contains(m)){
+                continue;
+            } 
+            if(option==1){ 
+            if(m.getCategory().trim().equalsIgnoreCase(category.trim())&&m.isAvailable()){
+                categoryMovies.add(m);
+            }
+            } else if (option==2){
             if(m.getCategory().trim().equalsIgnoreCase(category.trim())){
                 categoryMovies.add(m);
+            }
+            } else if (option==3){
+            if(m.getCategory().trim().equalsIgnoreCase(category.trim())&&!(m.isAvailable())){
+                categoryMovies.add(m);
+            }
             }
         }
         if(categoryMovies.isEmpty()){
@@ -251,19 +291,60 @@ public class StoreMovie implements Serializable {
         return categoryMovies;
     } 
     
-    public int copysAvailable(String title){
+    public List<Movie> filterAvailable(int option){
         moviesException();
-        int j=0;
-        for (int i = 0; i < movies.size(); i++) {
-            Movie movie=movies.get(i);
-            if (movie.getTitle().trim().toLowerCase().equals(title.trim().toLowerCase())) {
-                j++;
+        List<Movie> availableMovies=new ArrayList<>();
+        List<Movie> notAvailableMovies=new ArrayList<>();
+        for(Movie m: this.movies){
+            if(m.isAvailable()){
+                availableMovies.add(m);
+                continue;
+            } 
+            notAvailableMovies.add(m);
+        }
+        if(option>2||option<=0){
+            throw new IllegalArgumentException("Opción inválida");
+        }
+        if(option==1){
+            return availableMovies;
+        }
+        return notAvailableMovies;
+    }
+
+    public int copiesAvailable(String title){
+        moviesException();
+        int copies=0;
+        for (Movie m: this.movies){
+            if(m.getTitle().equalsIgnoreCase(title)&&m.isAvailable()){
+                copies++;
             }
         }
-        if(j==0){
+        if(copies==0){
             throw new IllegalArgumentException("Hay 0 copias disponibles de la película");
         }
-        return j;
+        return copies;
+    }
+
+    public void eliminateMovie(Movie movie, int option){
+        moviesException();
+        if(option>2||option<=0){
+            throw new IllegalArgumentException("Opción inválida");
+        }
+        if(option==1) {
+        for(Movie m: this.movies){
+            if(movie.getTitle().trim().equalsIgnoreCase(m.getTitle().trim())){
+                m.switchActive();
+                if(m.isAvailable()){
+                    movies.remove(m);
+                }
+            }
+        } 
+        return;
+        }
+        movie.switchActive();
+        if(movie.isAvailable()){
+            movies.remove(movie);
+        }
     }
     
     // Auxxiliary methods

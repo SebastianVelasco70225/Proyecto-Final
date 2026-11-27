@@ -11,7 +11,7 @@ public class Movie implements Serializable {
     private String category;
     private StoreMovie movieStore; 
     private int id;
-    private boolean active=true;
+    private boolean active;
 
     public Movie (String title, int pegi,int release, String category, StoreMovie movieStore){
         setAvailable(true);
@@ -20,6 +20,7 @@ public class Movie implements Serializable {
         setRelease(release);
         setCategory(category);
         setMovieStore(movieStore);
+        this.active = true;
     }
 
     public String getTitle() {

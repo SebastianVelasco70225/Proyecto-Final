@@ -15,8 +15,6 @@ public class Main {
 
         if (store == null) {
             store = new StoreMovie("PeliPlus", "71484", "Parque Caldas", 20000f);
-
-            store.addMovies(new Movie("inception", 15, 2010, "Ciencia Ficcion", store, 1));
             store.addCustomers(new Customer(1068217112, 18, "Leonardo Rivera", "Palermo"));
         }
 

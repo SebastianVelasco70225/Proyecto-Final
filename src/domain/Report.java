@@ -90,10 +90,29 @@ public class Report implements Serializable{
         }
 
         return new Report(id, title, type, employee, sb.toString());
-
     }
 
-    // Getters and Setters
+    public static Report createReport( int id, List<Renting> rentings, Employee employee){
+        String title = "Reporte de devoluciones";
+        String type = "Devoluciones";
+
+        if (rentings == null || rentings.isEmpty()){
+            return new Report(id, title, type, employee, "No hay devolucciones por el momento");
+        }
+        
+        StringBuilder sb = new StringBuilder();
+        for (Renting r: rentings){
+            if (r.isState() == false){
+                sb.append(" - El nombre de la persona es: ").append(r.getCustomer().getName())
+                .append(" - la cantidad que rento la pelicula es; ").append(r.getRentalDays())
+                .append("La pelicula que rento es: ").append(r.getMovie().getTitle())
+                .append("El costo toal es: ").append(r.getFinalPrice());
+            }
+        }
+
+        return new Report(id, title, type, employee, sb.toString());
+    } 
+
     public int getId() {
         return id;
     }

@@ -96,4 +96,5 @@ public class Movie implements Serializable {
                 + ", getTitle()=" + getTitle() + "]";
     }
     
+    
 }

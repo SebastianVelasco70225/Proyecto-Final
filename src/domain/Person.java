@@ -1,6 +1,10 @@
 package src.domain;
 
-public class Person {
+import java.io.Serializable;
+
+public class Person implements Serializable{
+
+    private static final Long serialVersionUID = 1L;
     private int identificationNumber;
     private String name;
     private String address;

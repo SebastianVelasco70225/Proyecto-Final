@@ -10,7 +10,7 @@ import java.io.ObjectOutputStream;
 import src.domain.StoreMovie;
 
 public class FileManager {
-    private static final String File_Name = "store_data.dat";
+    private static final String File_Name = "src/data/store_data.dat";
 
     // Method for save
     public static void  saveStore(StoreMovie store) throws IOException{
@@ -22,7 +22,7 @@ public class FileManager {
 
     // Method for load
 
-    public static StoreMovie loadStore(StoreMovie store) throws IOException, ClassNotFoundException {
+    public static StoreMovie loadStore() throws IOException, ClassNotFoundException {
         File file = new File(File_Name);
         if(!file.exists()){
             return null;

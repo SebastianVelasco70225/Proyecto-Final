@@ -3,7 +3,7 @@ import java.io.Serializable;
 
 public class Renting implements Serializable {
 
-    private static final long serailVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
     private StoreMovie storeMovie;
     private Movie movie;
     private int idRenting;

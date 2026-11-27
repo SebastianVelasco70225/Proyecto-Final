@@ -3,7 +3,7 @@ import java.io.Serializable;
 
 public class Movie implements Serializable {
 
-    private static final long seriaVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
     private String title;
     private int pegi;
     private int release;
@@ -13,14 +13,13 @@ public class Movie implements Serializable {
     private int id;
     private int copyNumber;
 
-    public Movie (String title, int pegi,int release, String category, StoreMovie movieStore, int id, int copyNumber){
+    public Movie (String title, int pegi,int release, String category, StoreMovie movieStore, int copyNumber){
         setAvailable(true);
         setTitle(title);
         setPegi(pegi);
         setRelease(release);
         setCategory(category);
         setMovieStore(movieStore);
-        setId(id);
         setCopyNumber(copyNumber);
 
     }
@@ -88,6 +87,13 @@ public class Movie implements Serializable {
 
     public void setCopyNumber(int copyNumber) {
         this.copyNumber = copyNumber;
+    }
+
+    @Override
+    public String toString() {
+        return "Movie [title=" + title + ", pegi=" + pegi + ", release=" + release + ", available=" + available
+                + ", category=" + category + ", movieStore=" + movieStore + ", id=" + id + ", copyNumber=" + copyNumber
+                + ", getTitle()=" + getTitle() + "]";
     }
     
 }

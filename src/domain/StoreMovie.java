@@ -96,10 +96,9 @@ public class StoreMovie implements Serializable {
         employees.add(employee);
     }
     
-    public void setRentings(List<Renting> rentings) {
-        this.rentings = rentings;
+    public List<Renting>  getRentings(){
+        return this.rentings;
     }
-    
     
     public List<Report> getReports() {
         return reports;

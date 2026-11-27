@@ -1,18 +1,12 @@
 package src.ui;
-
 import java.io.IOException;
 import src.data.FileManager;
-import src.domain.Customer;
-import src.domain.Movie;
 import src.domain.StoreMovie;
 
 public class Main {
-    
-
     public static void main(String[] args) {
         
         StoreMovie store = null;
-
         try {
             store = FileManager.loadStore();
         } catch (IOException | ClassNotFoundException e) {

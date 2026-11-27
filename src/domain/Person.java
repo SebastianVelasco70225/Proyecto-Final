@@ -5,11 +5,14 @@ import java.io.Serializable;
 public class Person implements Serializable{
 
     private static final Long serialVersionUID = 1L;
+
+    // Atributes 
     private int identificationNumber;
     private String name;
     private String address;
     private int age;
 
+    // Constructor
     public Person(int id, int age, String name, String adress){
         setIdentificationNumber(id);
         setName(name);
@@ -17,6 +20,7 @@ public class Person implements Serializable{
         setAge(age);
     }
 
+    // Getters and Setters
     public int getIdentificationNumber() {
         return identificationNumber;
     }

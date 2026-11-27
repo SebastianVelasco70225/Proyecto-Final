@@ -4,6 +4,8 @@ import java.io.Serializable;
 public class Renting implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
+    // Atributes
     private StoreMovie storeMovie;
     private Movie movie;
     private int idRenting;
@@ -14,6 +16,7 @@ public class Renting implements Serializable {
     private float totalCost;
     private boolean returnLate;
 
+    // Constructor
     public Renting(StoreMovie storeMovie, Movie movie, int idAlquiler, ModelRent modelRent,Customer customer, int days) {
         if (movie == null || customer == null ){
             throw new IllegalArgumentException("Error: el cliente y la pelicula son obligatorios");
@@ -41,6 +44,8 @@ public class Renting implements Serializable {
 
         this.totalCost =this.rent.calculateTotalPrice(movie, days);
     }
+
+    // Getters and Setters
     public StoreMovie getStoreMovie() {
         return storeMovie;
     }
@@ -97,6 +102,9 @@ public class Renting implements Serializable {
         return this.returnLate;
     }
 
+    // Methods 
+
+    // Method for comprobing if a customer is able to rent a movie based on it´s age and movie´s pegi
     public boolean parentalControl(Customer customer, Movie movie){
         if (customer.getAge() < movie.getPegi()){
             return true;
@@ -104,10 +112,12 @@ public class Renting implements Serializable {
         return false;
     }
 
+    // Method for extra price
     public float calculateLateFee(int days){
         return this.rent.calculateLateFee(this, days);
     }
 
+    // Method for adding extra price
     public void addLateFee(float lateFee){
         this.totalCost += lateFee;
     }

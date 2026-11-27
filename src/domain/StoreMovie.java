@@ -247,22 +247,22 @@ public class StoreMovie implements Serializable {
     }
 
     // Method for searching movies by title parcial match and total match
-    public List<Movie> searchMoviesByTitle(String parcialTitle, int option){
+    public List<Movie> searchMoviesByTitle(String parcialTitle, FilterOption option){
         moviesException();
         List <Movie> parcialTitleMatch= new ArrayList<>();
         for (Movie m: this.movies) {
             if (parcialTitleMatch.contains(m)){
                 continue;
             }
-            if(option==1){ 
+            if(FilterOption.AVAILABLE==option){ 
                 if (m.getTitle().trim().toLowerCase().contains(parcialTitle.trim().toLowerCase())&& m.isAvailable()){
                 parcialTitleMatch.add(m);
             }
-            } else if(option==2){
+            } else if(option==FilterOption.ALL){
                 if (m.getTitle().trim().toLowerCase().contains(parcialTitle.trim().toLowerCase())){
                 parcialTitleMatch.add(m);  
             }
-            } else if (option==3){
+            } else if (option==FilterOption.RENTING){
                 if (m.getTitle().trim().toLowerCase().contains(parcialTitle.trim().toLowerCase())&&!(m.isAvailable())){
                 parcialTitleMatch.add(m);  
             }
@@ -276,28 +276,30 @@ public class StoreMovie implements Serializable {
     
     // Method for searching movies by ID
     public Movie searchMovieById(int id){
-        if(id<0||id>=movies.size()){
-            throw new IllegalArgumentException("No se encontró una película con ese ID");
+        for(Movie m: this.movies){
+            if(m.getId()==id){
+                return m;
+            }
         }
-        return movies.get(id);
+        throw new IllegalArgumentException("No se encontró una película con este ID");
     }
 
-    public List<Movie> filterCategory(String category, int option){
+    public List<Movie> filterCategory(String category, FilterOption option){
         moviesException();
         List<Movie> categoryMovies= new ArrayList<>();
         for (Movie m : this.movies) {
             if (categoryMovies.contains(m)){
                 continue;
             } 
-            if(option==1){ 
+            if(option==FilterOption.AVAILABLE){ 
             if(m.getCategory().trim().equalsIgnoreCase(category.trim())&&m.isAvailable()){
                 categoryMovies.add(m);
             }
-            } else if (option==2){
+            } else if (option==FilterOption.ALL){
             if(m.getCategory().trim().equalsIgnoreCase(category.trim())){
                 categoryMovies.add(m);
             }
-            } else if (option==3){
+            } else if (option==FilterOption.RENTING){
             if(m.getCategory().trim().equalsIgnoreCase(category.trim())&&!(m.isAvailable())){
                 categoryMovies.add(m);
             }
@@ -310,7 +312,7 @@ public class StoreMovie implements Serializable {
     } 
     
     // Method for filter Movies by availabylity
-    public List<Movie> filterAvailable(int option){
+    public List<Movie> filterAvailable(FilterOption option){
         moviesException();
         List<Movie> availableMovies=new ArrayList<>();
         List<Movie> notAvailableMovies=new ArrayList<>();
@@ -321,20 +323,19 @@ public class StoreMovie implements Serializable {
             } 
             notAvailableMovies.add(m);
         }
-        if(option>2||option<=0){
-            throw new IllegalArgumentException("Opción inválida");
-        }
-        
-        if(option==1){
+        if(option==FilterOption.AVAILABLE){
             if(availableMovies.isEmpty()){
                 throw new IllegalArgumentException("No se encontraron películas disponibles");
             }
             return availableMovies;
         }
+        if(option==FilterOption.RENTING) {
         if(notAvailableMovies.isEmpty()){
             throw new IllegalArgumentException("No se encontraron películas rentadas");
         }
         return notAvailableMovies;
+    }
+        throw new IllegalArgumentException("Opción inválida");
     }
 
     // Method for know the copies available of a certain movie
@@ -352,11 +353,22 @@ public class StoreMovie implements Serializable {
         return copies;
     }
 
+    private int copiesAvailable2(String title){
+        moviesException();
+        int copies=0;
+        for (Movie m: this.movies){
+            if(m.getTitle().trim().equalsIgnoreCase(title.trim())&&m.isAvailable()){
+                copies++;
+            }
+        }
+        return copies;
+    }
+
     // Method for decission taking help, returns movies with only one copie
     public List<Movie> moviesWithOneCopie(){
         List<Movie> movies2=new ArrayList<>();
         for (Movie m: this.movies){
-            if(copiesAvailable(m.getTitle())==1){
+            if(copiesAvailable2(m.getTitle())==1){
                 movies2.add(m);
             }
         }
@@ -367,26 +379,28 @@ public class StoreMovie implements Serializable {
     } 
 
     // Method to eliminate movies from inventary
-    public void eliminateMovie(Movie movie, int option){
+    public void eliminateMovie(Movie movie, FilterOption option){
         moviesException();
-        if(option>2||option<=0){
-            throw new IllegalArgumentException("Opción inválida");
-        }
-        if(option==1) {
-        for(Movie m: this.movies){
-            if(movie.getTitle().trim().equalsIgnoreCase(m.getTitle().trim())){
-                m.switchActive();
-                if(m.isAvailable()){
-                    movies.remove(m);
+        if(option==FilterOption.AVAILABLE) {
+            List<Movie> eliminatedMovies= new ArrayList<>();
+            for(Movie m: this.movies){
+                if(movie.getTitle().trim().equalsIgnoreCase(m.getTitle().trim())){
+                    m.switchActive();
+                    if(m.isAvailable()){
+                        eliminatedMovies.add(m);
                 }
             }
+        }
+        for (Movie m: eliminatedMovies){
+            movies.remove(m);
         } 
         return;
-        }
+        } else if (option==FilterOption.ONEONLY){ 
         movie.switchActive();
         if(movie.isAvailable()){
             movies.remove(movie);
         }
+    }
     }
     
     // Auxxiliary methods
@@ -419,5 +433,12 @@ public class StoreMovie implements Serializable {
         if (number <= 0) {
             throw new IllegalArgumentException("Error: el numero ingresado no puede ser menor a 0");
         }
+    }
+
+    public enum FilterOption{
+        AVAILABLE,
+        ALL,
+        RENTING,
+        ONEONLY
     }
 }

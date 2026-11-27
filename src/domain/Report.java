@@ -5,6 +5,8 @@ import java.util.List;
 public class Report implements Serializable{
 
     private static final long serialVersionUID = 1L;
+
+    // Atributes
     private int id;
     private String title;
     private String content;
@@ -90,6 +92,8 @@ public class Report implements Serializable{
         return new Report(id, title, type, employee, sb.toString());
 
     }
+
+    // Getters and Setters
     public int getId() {
         return id;
     }
@@ -130,6 +134,7 @@ public class Report implements Serializable{
         this.employee = employee;
     }
 
+    // Method for write through FileManager.dat
     @Override
     public String toString() {
         return "Report [id=" + id + ", title=" + title + ", content=" + content + ", type=" + type + ", employee="

@@ -90,11 +90,12 @@ public class Movie implements Serializable {
 
     // Methods
 
-    // Atribute for switching from active to inactive
+    // Method for switching from active to inactive
     public void switchActive() {
         this.active = !(active);
     }
 
+    // Method for write trough FileManager.dat
     @Override
     public String toString() {
         return "Movie [title=" + title + ", pegi=" + pegi + ", release=" + release + ", available=" + available

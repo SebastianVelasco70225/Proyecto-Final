@@ -4,16 +4,20 @@ import java.io.Serializable;
 public class Voucher implements Serializable{
 
     private static final long serialVersionUID = 1L;
+
+    // Atributes
     private int id;
     private Renting renting;
     private float totalAmount;
 
+    // Constructor
     public Voucher(int id, Renting renting, float totalAmount ){
         setId(id);
         setRenting(renting);
         setTotalAmount(totalAmount);
     }
 
+    // Getters and Setters
     public int getId() {
         return this.id;
     }

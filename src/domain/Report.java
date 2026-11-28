@@ -112,7 +112,7 @@ public class Report implements Serializable{
             }
         }
 
-        return new Report(id, title, type, employee, sb.toString());
+        return new Report(id, title, type, employee, sb.toString(),isDate);
     } 
 
     public int getId() {

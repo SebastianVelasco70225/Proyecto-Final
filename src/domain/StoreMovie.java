@@ -14,13 +14,13 @@ public class StoreMovie implements Serializable {
     private String nit;
     private String address;
     private float basePrice;
-    private LocalDate currenDate = LocalDate.now();
+    private LocalDate currentDate = LocalDate.now();
     private List<Movie> movies = new ArrayList<>();
     private List<Customer> customers = new ArrayList<>();
     private List<Employee> employees = new ArrayList<>();
     private List<Renting> rentings = new ArrayList<>();
     private List<Report> reports = new ArrayList<>();
-    private List<Voucher> voucher = new ArrayList<>();
+    private List<Voucher> vouchers = new ArrayList<>();
 
 
     // Constructor
@@ -121,12 +121,12 @@ public class StoreMovie implements Serializable {
     }
     
     
-    public List<Voucher> getVoucher() {
-        return voucher;
+    public List<Voucher> getVouchers() {
+        return vouchers;
     }
 
-    public LocalDate getCurrenDate() {
-        return currenDate;
+    public LocalDate getCurrentDate() {
+        return currentDate;
     }
     
     
@@ -144,13 +144,13 @@ public class StoreMovie implements Serializable {
 
                 int amountRent = this.rentings.size() + 1;
 
-                Renting newRenting = new Renting(this, movie, amountRent, rent, customer, days, this.currenDate);
-                customer.getRenting().add(newRenting);
+                Renting newRenting = new Renting(this, movie, amountRent, rent, customer, days, currentDate);
+                customer.getRentings().add(newRenting);
                 movie.setAvailable(false);
                 this.rentings.add(newRenting);
 
-                Voucher newVoucher = new Voucher(amountRent, newRenting, newRenting.getFinalPrice());
-                this.voucher.add(newVoucher);
+                Voucher newVoucher = new Voucher(amountRent, newRenting, newRenting.getTotalCost(), employee, currentDate);
+                this.vouchers.add(newVoucher);
 
             } else {
                 throw new IllegalArgumentException("Error: La película no esta disponible");
@@ -171,18 +171,17 @@ public class StoreMovie implements Serializable {
             throw new IllegalArgumentException("Error: Este alquiler ya fue devuelto");
         }
         
-        renting.setActualReturnDate(this.currenDate);
-        long lateDays = ChronoUnit.DAYS.between(renting.getExpectedEndDate(), this.currenDate);
-        float lateFee = 0;
+        renting.setActualReturnDate(this.currentDate);
+        long lateDays = ChronoUnit.DAYS.between(renting.getExpectedEndDate(), this.currentDate);
 
         if (lateDays > 0){
             lateFee = renting.calculateLateFee((int) lateDays);
             renting.setReturnLate(true);
             renting.addLateFee(lateFee);
             
-            int idVoucher = voucher.size() + 1;
-            Voucher newVoucher = new Voucher(idVoucher, renting, lateFee, emmEmployee, this.currenDate);
-            this.voucher.add(newVoucher);
+            int idVoucher = vouchers.size() + 1;
+            Voucher newVoucher = new Voucher(idVoucher, renting, lateFee, emmEmployee, this.currentDate);
+            this.vouchers.add(newVoucher);
         }
             renting.getMovie().setAvailable(true);
             renting.setState(false);
@@ -248,7 +247,7 @@ public class StoreMovie implements Serializable {
         List<Renting> rentingProximeToEnd= filterActiveRentals();
         
         rentingProximeToEnd.removeIf(r -> {
-        long daysLeft = ChronoUnit.DAYS.between(this.currenDate, r.getExpectedEndDate());
+        long daysLeft = ChronoUnit.DAYS.between(this.currentDate, r.getExpectedEndDate());
         return daysLeft > 2 || daysLeft < 0;
     });
 
@@ -256,9 +255,27 @@ public class StoreMovie implements Serializable {
     }
 
     // Report´s Methods
-    public void createReport(FilterOption option){
+    public void createReport(FilterOption option, Employee employee){
+        Report generalReport= null;
+
         if(option==FilterOption.FINANCIERO){
-            Report report= new Report()
+            Report financialReport= generalReport.createReportIncome(reports.size()+1, vouchers, employee, currentDate);
+            reports.add(financialReport);
+        }
+        if(option==FilterOption.ALQUILERES){
+            Report rentingReport= generalReport.createReportRenting(reports.size()+1, rentings, employee, currentDate);
+            reports.add(rentingReport);
+        }
+        if(option==FilterOption.DEVOLUCIONES){
+            Report returnReport= generalReport.createReport(reports.size()+1, rentings, employee, currentDate);
+            reports.add(returnReport);
+        }
+        if(option==FilterOption.INVENTARIO){
+            Report inventaryReport= generalReport.createReportInventory(reports.size()+1, movies, employee, currentDate);
+            reports.add(inventaryReport);
+        }
+        if(option==FilterOption.GENERAL){
+            Report newReport= new Report(reports.size()+1, null, null, employee, null, currentDate);
         }
 
 
@@ -501,7 +518,7 @@ public class StoreMovie implements Serializable {
 
     public void advanceDays(int days){
         validateNumber(days);
-        this.currenDate = this.currenDate.plusDays(days);
+        currentDate = currentDate.plusDays(days);
     }
     
     public void customerException(){

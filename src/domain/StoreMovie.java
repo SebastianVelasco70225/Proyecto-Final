@@ -125,7 +125,7 @@ public class StoreMovie implements Serializable {
         return voucher;
     }
 
-    public LocalDate getCurrenDate() {
+    public LocalDate getCurrentDate() {
         return currentDate;
     }
     

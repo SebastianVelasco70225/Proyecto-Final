@@ -39,10 +39,11 @@ public class ModelRent implements Serializable{
     // Method for getting the extra price based on the release year of a movie
     public float priceRelease(Movie movie){
         float extraCost = 0 ;
-        if(movie.getRelease() == 2026){
+        int currentYear = java.time.Year.now().getValue();
+        if(movie.getRelease() == currentYear){
             extraCost = (this.basePrice + ( this.basePrice * 0.2f));
             return extraCost;
-        } else if (movie.getRelease() < 2026 && movie.getRelease() > 2021){
+        } else if (movie.getRelease() < currentYear && movie.getRelease() > (currentYear - 5)){
             extraCost = this.basePrice;
             return extraCost;
         } 
@@ -61,12 +62,10 @@ public class ModelRent implements Serializable{
     }
 
     // Method for getting the extra price for returning the movie past the renting time
-    public float calculateLateFee(Renting renting, int days){
-        float extraCost = 0;
-        if (days > renting.getRentalDays()){
-            extraCost = (basePrice * 0.4f) * (days - renting.getRentalDays());
-            return extraCost;
+    public float calculateLateFee(int lateDays){
+        if (lateDays > 0 ){ 
+            return (this.basePrice * 0.4f ) * lateDays;
         }
-        return  extraCost;
+        return 0;
     }
 }

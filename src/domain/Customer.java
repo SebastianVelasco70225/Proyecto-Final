@@ -19,7 +19,7 @@ public class Customer extends Person implements Serializable {
     // Constructor for adding a Customer with renting
     public Customer(int id, int age, String name, String adress, List<Renting> rentings){
         super(id,age,name,adress);
-        this.renting = (renting != null) ? renting : new ArrayList<>();
+        this.renting = (rentings != null) ? renting : new ArrayList<>();
     }
     
     // Getters and Setters

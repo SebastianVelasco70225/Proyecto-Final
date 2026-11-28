@@ -7,6 +7,7 @@ public class ModelRent implements Serializable{
 
     // Atributes
     private float basePrice;
+    int currentYear = java.time.Year.now().getValue();
 
     // Constructor
     public ModelRent(float basePrice){
@@ -39,10 +40,10 @@ public class ModelRent implements Serializable{
     // Method for getting the extra price based on the release year of a movie
     public float priceRelease(Movie movie){
         float extraCost = 0 ;
-        if(movie.getRelease() == 2026){
+        if(movie.getRelease() == currentYear){
             extraCost = (this.basePrice + ( this.basePrice * 0.2f));
             return extraCost;
-        } else if (movie.getRelease() < 2026 && movie.getRelease() > 2021){
+        } else if (movie.getRelease() < currentYear && movie.getRelease() > (currentYear - 5)){
             extraCost = this.basePrice;
             return extraCost;
         } 

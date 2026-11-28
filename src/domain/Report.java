@@ -5,8 +5,6 @@ import java.util.List;
 public class Report implements Serializable{
 
     private static final long serialVersionUID = 1L;
-
-    // Atributes
     private int id;
     private String title;
     private String content;
@@ -18,8 +16,9 @@ public class Report implements Serializable{
     public Report (int id, String title, String type, Employee employee, String content){
         setId(id);
         setTitle(title);
-        setTitle(type);
+        setType(type);
         setEmployee(employee);
+        setContent(content);
     }
 
     // Method for creating a financial report
@@ -153,7 +152,6 @@ public class Report implements Serializable{
         this.employee = employee;
     }
 
-    // Method for write through FileManager.dat
     @Override
     public String toString() {
         return "Report [id=" + id + ", title=" + title + ", content=" + content + ", type=" + type + ", employee="

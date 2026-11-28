@@ -9,16 +9,19 @@ public class Customer extends Person implements Serializable{
     
     // Atributes
     private List<Renting> rentings;
+    private boolean active;
 
     // Constructor for adding a Customer without renting
     public Customer(int id,int age, String name, String adress){
         super(id,age,name,adress);
+        this.active = true;
         this.rentings = new ArrayList<>();
     }
 
     // Constructor for adding a Customer with renting
     public Customer(int id, int age, String name, String adress, List<Renting> rentings){
         super(id,age,name,adress);
+        this.active = true;
         this.rentings = (rentings != null) ? rentings : new ArrayList<>();
     }
     
@@ -28,6 +31,14 @@ public class Customer extends Person implements Serializable{
     }
     public void addRenting(Renting renting) {
         rentings.add(renting);
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
 }

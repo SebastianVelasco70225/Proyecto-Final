@@ -125,7 +125,7 @@ public class StoreMovie implements Serializable {
         return voucher;
     }
 
-    public LocalDate getCurrenDate() {
+    public LocalDate getCurrentDate() {
         return currentDate;
     }
     
@@ -139,24 +139,28 @@ public class StoreMovie implements Serializable {
         
         validateNumber(days);
 
-            if (movie.isAvailable()){
-                ModelRent rent = new ModelRent(this.basePrice);
+        if(customer == null || !customer.isActive()){
+            throw new IllegalArgumentException("Error: el cliente no esta activo");
+        }
 
-                int amountRent = this.rentings.size() + 1;
+        if (movie != null && movie.isAvailable() && movie.isActive()){
+            ModelRent rent = new ModelRent(this.basePrice);
 
-                Renting newRenting = new Renting(this, movie, amountRent, rent, customer, days, this.currentDate);
-                customer.getRentings().add(newRenting);
-                movie.setAvailable(false);
-                this.rentings.add(newRenting);
+            int amountRent = this.rentings.size() + 1;
 
-                int amountVouncher = voucher.size() + 1;
+            Renting newRenting = new Renting(this, movie, amountRent, rent, customer, days, this.currentDate);
+            customer.getRentings().add(newRenting);
+            movie.setAvailable(false);
+            this.rentings.add(newRenting);
 
-                Voucher newVoucher = new Voucher(amountVouncher, newRenting, newRenting.getTotalCost(), employee, this.currentDate);
-                this.voucher.add(newVoucher);
+            int amountVouncher = voucher.size() + 1;
 
-            } else {
-                throw new IllegalArgumentException("Error: La película no esta disponible");
-            }
+            Voucher newVoucher = new Voucher(amountVouncher, newRenting, newRenting.getTotalCost(), employee, this.currentDate);
+            this.voucher.add(newVoucher);
+
+        } else {
+            throw new IllegalArgumentException("Error: La película no esta disponible");
+        }
     }
 
     //Returns control method
@@ -250,45 +254,73 @@ public class StoreMovie implements Serializable {
         
         rentingProximeToEnd.removeIf(r -> {
         long daysLeft = ChronoUnit.DAYS.between(this.currentDate, r.getExpectedEndDate());
-        return daysLeft > 2 || daysLeft < 0;
+        return daysLeft > 2;
     });
 
         return rentingProximeToEnd;
     }
 
     // Report´s Methods
-    public void createReport(FilterOption option, Employee employee){
 
-        if(option==FilterOption.FINANCIERO){
-            Report financialReport= Report.createReportIncome(reports.size()+1, voucher, employee, currentDate);
+    public void createReport(typeReport option, Employee employee){
+        if (option == typeReport.Financial){
+            Report financialReport = Report.createReportIncome(reports.size() + 1, this.voucher, employee, this.currentDate);
             reports.add(financialReport);
-        }
-        if(option==FilterOption.ALQUILERES){
-            Report rentingReport= Report.createReportRenting(reports.size()+1, rentings, employee, currentDate);
-            reports.add(rentingReport);
-        }
-        if(option==FilterOption.DEVOLUCIONES){
-            Report returnReport= Report.createReport(reports.size()+1, rentings, employee, currentDate);
-            reports.add(returnReport);
-        }
-        if(option==FilterOption.INVENTARIO){
-            Report inventaryReport= Report.createReportInventory(reports.size()+1, movies, employee, currentDate);
+        } else if (option == typeReport.Inventory){
+            Report inventaryReport = Report.createReportInventory(reports.size() + 1, this.movies, employee, this.currentDate);
             reports.add(inventaryReport);
+        } else {
+            throw new IllegalArgumentException("Este tipo de reporte requiere fecha de inicio y fin");
         }
-        if(option==FilterOption.GENERAL){
-            Report newReport = new Report(reports.size()+1, null, null, employee, null, currentDate);
-        }
-
-
     }
-    
 
+    public void createReport(typeReport option, Employee employee, String content){
+        if (option == typeReport.General){
+            Report newReport = new Report(reports.size() + 1 , "Reporte General", "General", employee, content, this.currentDate);
+            reports.add(newReport);
+        }
+    }
+
+    public void createReport(typeReport option, Employee employee, LocalDate startDate, LocalDate endDate){
+        if (option == typeReport.Rentals){
+            Report rentingReport = Report.createReportRenting(reports.size() + 1, this.rentings, employee, startDate, endDate, this.currentDate);
+            reports.add(rentingReport);
+        } else if (option == typeReport.Returns){
+            Report returnReport = Report.createReportReturn(reports.size() + 1, this.rentings, employee, startDate, endDate, this.currentDate);
+            reports.add(returnReport);
+        } else {
+            createReport(option, employee);
+        }
+    }
     // Method for creating new movies and adding them to the catalog
 
     public void createMovies(String title, int pegi,int release, String category){
         Movie m=new Movie(title, pegi, release, category, this);
         m.setId(movies.size());
         addMovies(m);
+    }
+
+    // Method for filtering rentings by expected date
+
+    public List<Renting> filterByExpectedReturnDate(LocalDate expectedDate){
+
+        if(expectedDate == null){
+            throw new IllegalArgumentException("Error fecha invalida");
+        }
+
+        rentingException();
+        List<Renting> temporalList = new ArrayList<>();
+
+        for(Renting r: this.rentings){
+            if (r.getExpectedEndDate().equals(expectedDate)){
+                temporalList.add(r);
+            }
+        }
+        if(temporalList.isEmpty()){
+            throw new IllegalArgumentException("No hay alquileres con fecha de devolucion prevista para esa fecha");
+        }
+
+        return  temporalList;
     }
     
     // Method for adding movies to the catalog
@@ -299,22 +331,22 @@ public class StoreMovie implements Serializable {
 
     // Method for searching movies by title parcial match and total match
 
-    public List<Movie> searchMoviesByTitle(String parcialTitle, FilterOption option){
+    public List<Movie> searchMoviesByTitle(String parcialTitle, movieFilter option){
         moviesException();
         List <Movie> parcialTitleMatch= new ArrayList<>();
         for (Movie m: this.movies) {
             if (parcialTitleMatch.contains(m)){
                 continue;
             }
-            if(FilterOption.AVAILABLE==option){ 
+            if(movieFilter.Available == option){ 
                 if (m.getTitle().trim().toLowerCase().contains(parcialTitle.trim().toLowerCase())&& m.isAvailable()){
                 parcialTitleMatch.add(m);
             }
-            } else if(option==FilterOption.ALL){
+            } else if(option == movieFilter.All){
                 if (m.getTitle().trim().toLowerCase().contains(parcialTitle.trim().toLowerCase())){
                 parcialTitleMatch.add(m);  
             }
-            } else if (option==FilterOption.RENTING){
+            } else if (option == movieFilter.Renting){
                 if (m.getTitle().trim().toLowerCase().contains(parcialTitle.trim().toLowerCase())&&!(m.isAvailable())){
                 parcialTitleMatch.add(m);  
             }
@@ -337,22 +369,22 @@ public class StoreMovie implements Serializable {
         throw new IllegalArgumentException("No se encontró una película con este ID");
     }
 
-    public List<Movie> filterCategory(String category, FilterOption option){
+    public List<Movie> filterCategory(String category, movieFilter option){
         moviesException();
         List<Movie> categoryMovies= new ArrayList<>();
         for (Movie m : this.movies) {
             if (categoryMovies.contains(m)){
                 continue;
             } 
-            if(option==FilterOption.AVAILABLE){ 
+            if(option == movieFilter.Available){ 
             if(m.getCategory().trim().equalsIgnoreCase(category.trim())&&m.isAvailable()){
                 categoryMovies.add(m);
             }
-            } else if (option==FilterOption.ALL){
+            } else if (option == movieFilter.All){
             if(m.getCategory().trim().equalsIgnoreCase(category.trim())){
                 categoryMovies.add(m);
             }
-            } else if (option==FilterOption.RENTING){
+            } else if (option == movieFilter.Renting){
             if(m.getCategory().trim().equalsIgnoreCase(category.trim())&&!(m.isAvailable())){
                 categoryMovies.add(m);
             }
@@ -366,7 +398,7 @@ public class StoreMovie implements Serializable {
     
     // Method for filter Movies by availabylity
 
-    public List<Movie> filterAvailable(FilterOption option){
+    public List<Movie> filterAvailable( movieFilter option){
         moviesException();
         List<Movie> availableMovies=new ArrayList<>();
         List<Movie> notAvailableMovies=new ArrayList<>();
@@ -377,13 +409,13 @@ public class StoreMovie implements Serializable {
             } 
             notAvailableMovies.add(m);
         }
-        if(option==FilterOption.AVAILABLE){
+        if(option == movieFilter.Available){
             if(availableMovies.isEmpty()){
                 throw new IllegalArgumentException("No se encontraron películas disponibles");
             }
             return availableMovies;
         }
-        if(option==FilterOption.RENTING) {
+        if(option == movieFilter.Renting) {
         if(notAvailableMovies.isEmpty()){
             throw new IllegalArgumentException("No se encontraron películas rentadas");
         }
@@ -436,29 +468,36 @@ public class StoreMovie implements Serializable {
 
     // Method to eliminate movies from inventary
 
-    public void eliminateMovie(Movie movie, FilterOption option){
+    public void deleteMovie(Movie movie, deleteOption option){
         moviesException();
-        if(option==FilterOption.AVAILABLE) {
+        if(option == deleteOption.All_copies) {
             List<Movie> eliminatedMovies= new ArrayList<>();
             for(Movie m: this.movies){
                 if(movie.getTitle().trim().equalsIgnoreCase(m.getTitle().trim())){
-                    m.switchActive();
-                    if(m.isAvailable()){
-                        eliminatedMovies.add(m);
+                    if (hasRentingHistory(m)){
+                        m.switchActive();
+                    }else {
+                        if (!m.isAvailable()){
+                            throw new IllegalArgumentException("La pelicula no puede ser eliminada");
+                        } else {
+                            eliminatedMovies.add(m);
+                        }
+                    }
                 }
             }
-        }
-        for (Movie m: eliminatedMovies){
-            movies.remove(m);
-        } 
-        return;
-        } else if (option==FilterOption.ONE_ONLY){ 
-        movie.switchActive();
-        if(movie.isAvailable()){
-            movies.remove(movie);
+        
+        this.movies.removeAll(eliminatedMovies);
+
+        } else if (option == deleteOption.One_only){
+        if(hasRentingHistory(movie)){
+            movie.switchActive();
+        } else {
+            this.movies.remove(movie);
+            }
         }
     }
-    }
+
+    // Methods for filtering customer by name
 
     public List<Renting> filterByCustomer(String name){
 
@@ -477,20 +516,99 @@ public class StoreMovie implements Serializable {
         return listTemporal;
     }
 
-    public List<Renting> filterByReturnDay(int days){
-        List<Renting> listTemporal = new ArrayList<>();
-        for (Renting r : this.rentings){
-            if (r.getRentalDays() == days){
-                listTemporal.add(r);
+    // Method for filtering customers by id
+
+    public Customer searchCustomerById(int id){
+
+        validateNumber(id);
+        customerException();
+        for (Customer c: this.customers){
+            if (c.getIdentificationNumber() == id){
+                return  c;
             }
         }
 
-        if (listTemporal.isEmpty()) {
-            throw new IllegalArgumentException("No hay rentas previstar para esa cantidad de dias");
+        throw new IllegalArgumentException("No hay cienntes con ese numero de identificacion");
+    }
+
+    // Metho for update data ofCustomer 
+
+    public void updateCustomer( int id, int age, String name, String address){
+
+        validateNumber(age);
+        validateString(name);
+        validateString(address);
+
+        Customer tempCustomer = searchCustomerById(id);
+
+        tempCustomer.setAge(age);
+        tempCustomer.setName(name);
+        tempCustomer.setAddress(address);
+
+    }
+
+    // Method for update Movie
+
+    public void updateMovie(int id, String title, int pegi, int release, String category){
+
+        validateNumber(pegi);
+        validateNumber(release);
+        validateString(category);
+        validateString(title);
+
+        Movie temporalMovie = searchMovieById(id);
+
+        temporalMovie.setTitle(title);
+        temporalMovie.setPegi(pegi);
+        temporalMovie.setRelease(release);
+        temporalMovie.setCategory(category);
+
+    }
+
+    // Method for filtering rentings overdeu
+
+    public List<Renting> filterOverdueRentals(){
+        List <Renting> overdueRentals = new ArrayList<>();
+
+        rentingException();
+        for (Renting r: filterActiveRentals()){
+            if (this.currentDate.isAfter(r.getExpectedEndDate())){
+                overdueRentals.add(r);
+            }
         }
 
-        return listTemporal;
+        if (overdueRentals.isEmpty()){
+            throw new IllegalArgumentException("No se encontraron renta vencidas");
+        }
+
+        return overdueRentals;
     }
+
+    // Method for delet customer
+
+    public void deleteCustomer(int id){
+        Customer tempCustomer = searchCustomerById(id);
+        if (tempCustomer == null){
+            throw new IllegalArgumentException("Error: el cliente no fue encontrado");
+        }
+
+        boolean hasRentings = false;
+        for(Renting r: this.rentings){
+            if (r.getCustomer().getIdentificationNumber() == tempCustomer.getIdentificationNumber()){
+                hasRentings = true;
+                break;
+            }
+        }
+
+        if (hasRentings){
+            tempCustomer.setActive(false);
+        } else {
+            customers.remove(tempCustomer);
+        }
+    }
+
+    
+    // Method for filtering rentings by inactive
 
     public List<Renting> filterReturnRenting (){
         
@@ -546,15 +664,37 @@ public class StoreMovie implements Serializable {
         }
     }
 
-    public enum FilterOption{
-        AVAILABLE,
-        ALL,
-        RENTING,
-        ONE_ONLY,
-        FINANCIERO,
-        ALQUILERES,
-        DEVOLUCIONES,
-        INVENTARIO,
-        GENERAL
+    public void validateString(String string){
+        if (string == null || string.isBlank()){
+            throw new IllegalArgumentException("Error: la cadena es invalida vuelvalo a intentar");
+        }
+    }
+
+    private boolean hasRentingHistory(Movie movie){
+        for(Renting r: this.rentings){
+            if (r.getMovie().equals(movie)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    public enum movieFilter {
+        Available,
+        Renting,
+        All
+    }
+    public enum typeReport {
+        Financial,
+        Rentals,
+        Returns,
+        Inventory,
+        General
+    }
+
+    public enum deleteOption {
+        All_copies,
+        One_only 
     }
 }

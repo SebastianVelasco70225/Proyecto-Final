@@ -25,11 +25,11 @@ public class StoreMovie implements Serializable {
         setName(name);
         setNit(nit);
         setAddress(address);
-        setBaseprice(basePrice);
+        setBasePrice(basePrice);
     }
 
     // Setters y Getters
-    public void setBaseprice(float basePrice){
+    public void setBasePrice(float basePrice){
         if(basePrice <= 0 ){
             throw new IllegalArgumentException("El precio base debe de ser mayor a 0");
         }
@@ -56,6 +56,9 @@ public class StoreMovie implements Serializable {
 
 
     public void setNit(String nit) {
+        if(nit.isBlank()){
+            throw new IllegalArgumentException("El NIT no puede ser vacío");
+        }
         this.nit = nit;
     }
 
@@ -66,6 +69,9 @@ public class StoreMovie implements Serializable {
 
 
     public void setAddress(String address) {
+        if(address.isBlank()){
+            throw new IllegalArgumentException("Dirección inválida");
+        }
         this.address = address;
     }
 
@@ -134,7 +140,7 @@ public class StoreMovie implements Serializable {
                 Renting newRenting = new Renting(this, movie, amountRent, rent, customer, days);
                 this.rentings.add(newRenting);
 
-                Voucher newVoucher = new Voucher(amountRent, newRenting, newRenting.getFinalPrice());
+                Voucher newVoucher = new Voucher(amountRent, newRenting, newRenting.getTotalCost());
                 this.voucher.add(newVoucher);
 
             } else {
@@ -148,7 +154,7 @@ public class StoreMovie implements Serializable {
         validateNumber(outDays);
         validateNumber(idRentig);
 
-        float latefee = 0;
+        float lateFee = 0;
         
         Renting renting = searchRenting(idRentig);
 
@@ -157,12 +163,12 @@ public class StoreMovie implements Serializable {
         }
 
         if (outDays > renting.getRentalDays()){
-            latefee = renting.calculateLateFee(outDays);
+            lateFee = renting.calculateLateFee(outDays);
             renting.setReturnLate(true);
             renting.addLateFee(latefee);
             
             int idVoucher = voucher.size() + 1;
-            Voucher newVoucher = new Voucher(idVoucher, renting, latefee);
+            Voucher newVoucher = new Voucher(idVoucher, renting, lateFee);
             this.voucher.add(newVoucher);
         }
             renting.getMovie().setAvailable(true);

@@ -10,12 +10,15 @@ import java.io.ObjectOutputStream;
 import src.domain.StoreMovie;
 
 public class FileManager {
-    private static final String File_Name = "src/data/store_data.dat";
+    private static final String FILE_NAME = "src/data/store_data.dat";
 
     // Method for save
     public static void  saveStore(StoreMovie store) throws IOException{
-
-        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(File_Name))){
+        File file = new File(FILE_NAME);
+        if (file.getParentFile() != null){
+            file.getParentFile().mkdirs();
+        }
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(FILE_NAME))){
             oos.writeObject(store);
         }
     }
@@ -23,12 +26,12 @@ public class FileManager {
     // Method for load
 
     public static StoreMovie loadStore() throws IOException, ClassNotFoundException {
-        File file = new File(File_Name);
+        File file = new File(FILE_NAME);
         if(!file.exists()){
             return null;
         }
 
-        try (ObjectInputStream ois = new ObjectInputStream(new  FileInputStream(File_Name))){
+        try (ObjectInputStream ois = new ObjectInputStream(new  FileInputStream(FILE_NAME))){
             return (StoreMovie) ois.readObject();
         }
     }

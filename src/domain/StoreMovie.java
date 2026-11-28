@@ -333,6 +333,9 @@ public class StoreMovie implements Serializable {
 
     public List<Movie> searchMoviesByTitle(String parcialTitle, movieFilter option){
         moviesException();
+        if(parcialTitle.isBlank()){
+            throw new IllegalArgumentException("El título no puede ser vacío");
+        }
         List <Movie> parcialTitleMatch= new ArrayList<>();
         for (Movie m: this.movies) {
             if (parcialTitleMatch.contains(m)){
@@ -489,12 +492,29 @@ public class StoreMovie implements Serializable {
         this.movies.removeAll(eliminatedMovies);
 
         } else if (option == deleteOption.One_only){
-        if(hasRentingHistory(movie)){
-            movie.switchActive();
-        } else {
-            this.movies.remove(movie);
+            if(hasRentingHistory(movie)){
+                movie.switchActive();
+            } else {
+                this.movies.remove(movie);
             }
         }
+    }
+    
+    // Method for update Movie
+
+    public void updateMovie(int id, String title, int pegi, int release, String category){
+
+        validateNumber(pegi);
+        validateNumber(release);
+        validateString(category);
+        validateString(title);
+
+        Movie temporalMovie = searchMovieById(id);
+
+        temporalMovie.setTitle(title);
+        temporalMovie.setPegi(pegi);
+        temporalMovie.setRelease(release);
+        temporalMovie.setCategory(category);
     }
 
     // Methods for filtering customer by name
@@ -547,23 +567,6 @@ public class StoreMovie implements Serializable {
 
     }
 
-    // Method for update Movie
-
-    public void updateMovie(int id, String title, int pegi, int release, String category){
-
-        validateNumber(pegi);
-        validateNumber(release);
-        validateString(category);
-        validateString(title);
-
-        Movie temporalMovie = searchMovieById(id);
-
-        temporalMovie.setTitle(title);
-        temporalMovie.setPegi(pegi);
-        temporalMovie.setRelease(release);
-        temporalMovie.setCategory(category);
-
-    }
 
     // Method for filtering rentings overdeu
 

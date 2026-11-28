@@ -26,6 +26,9 @@ public class Person implements Serializable{
     }
 
     public void setIdentificationNumber(int identificationNumber) {
+        if(identificationNumber<0){
+            throw new IllegalArgumentException("Número de identificación inválido");
+        }
         this.identificationNumber = identificationNumber;
     }
 
@@ -34,6 +37,9 @@ public class Person implements Serializable{
     }
 
     public void setName(String name) {
+        if (name.isBlank()){
+            throw new IllegalArgumentException("El nombre no puede ser vacío");
+        }
         this.name = name;
     }
 
@@ -42,6 +48,9 @@ public class Person implements Serializable{
     }
 
     public void setAddress(String adress) {
+        if(adress.isBlank()){
+            throw new IllegalArgumentException("La dirección no puede ser vacío");
+        }
         this.address = adress;
     }
 
@@ -50,6 +59,9 @@ public class Person implements Serializable{
     }
 
     public void setAge(int age) {
+        if (age<0){
+            throw new IllegalArgumentException("Edad inválida");
+        }
         this.age = age;
     }
 

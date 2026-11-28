@@ -32,6 +32,9 @@ public class Movie implements Serializable {
     }
 
     public void setTitle(String title) {
+        if(title.isBlank()){
+            throw new IllegalArgumentException("El título no puede ser vacío");
+        }
         this.title = title;
     }
 
@@ -40,6 +43,9 @@ public class Movie implements Serializable {
     }
 
     public void setPegi(int pegi) {
+        if(pegi<3||pegi>18){
+            throw new IllegalArgumentException("Pegi inexistente");
+        }
         this.pegi = pegi;
     }
     
@@ -48,6 +54,9 @@ public class Movie implements Serializable {
     }
 
     public void setRelease(int release) {
+        if(release<1888||release>2026){
+            throw new IllegalArgumentException("Año de película inválido");
+        }
         this.release = release;
     }
     
@@ -81,6 +90,9 @@ public class Movie implements Serializable {
     }
 
     public void setId(int id) {
+        if(id<0){
+            throw new IllegalArgumentException("ID incorrecto");
+        }
         this.id = id;
     }
     

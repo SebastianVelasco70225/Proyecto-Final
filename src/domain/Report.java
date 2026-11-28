@@ -97,16 +97,16 @@ public class Report implements Serializable{
         String type = "Devoluciones";
 
         if (rentings == null || rentings.isEmpty()){
-            return new Report(id, title, type, employee, "No hay devolucciones por el momento");
+            return new Report(id, title, type, employee, "No hay devoluciones por el momento");
         }
         
         StringBuilder sb = new StringBuilder();
         for (Renting r: rentings){
             if (r.isState() == false){
                 sb.append(" - El nombre de la persona es: ").append(r.getCustomer().getName())
-                .append(" - la cantidad que rento la pelicula es; ").append(r.getRentalDays())
-                .append("La pelicula que rento es: ").append(r.getMovie().getTitle())
-                .append("El costo toal es: ").append(r.getFinalPrice());
+                .append(" - la cantidad de días que rentó la película es; ").append(r.getRentalDays())
+                .append("La película que rentó es: ").append(r.getMovie().getTitle())
+                .append("El costo total es: ").append(r.getTotalCost());
             }
         }
 
@@ -118,6 +118,9 @@ public class Report implements Serializable{
     }
 
     public void setId(int id) {
+        if(id<0){
+            throw new IllegalArgumentException("El id no puede ser negativo");
+        }
         this.id = id;
     }
 

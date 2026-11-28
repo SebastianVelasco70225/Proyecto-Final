@@ -29,7 +29,7 @@ public class Renting implements Serializable {
         if(parentalControl(customer, movie)){
             throw new IllegalArgumentException(
                 "Control Parental: " + customer.getName() + " tiene: " + customer.getAge() +
-                " años y la pelicula requiere mínimo " + movie.getPegi()
+                " años y la pelicula requiere mínimo " + movie.getPegi()+" años."
             );
         }
 
@@ -62,13 +62,16 @@ public class Renting implements Serializable {
         return idRenting;
     }
     public void setIdRenting(int idAlquiler) {
-        this.idRenting = idAlquiler;
+        if(idAlquiler<0){
+            throw new IllegalArgumentException("El id no puede ser negativo");
+        }
+        idRenting = idAlquiler;
     }
     public Customer getCustomer() {
         return customer;
     }
-    public void setCustomer(Customer cliente) {
-        this.customer = cliente;
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
     }
     public boolean isState() {
         return state;
@@ -77,18 +80,18 @@ public class Renting implements Serializable {
         this.state = state;
     }
     public void setRentalDays(int days){
-        this.rentalDays = days;
+        if(days<=0){
+            throw new IllegalArgumentException("Los días deben ser positivos");
+        }
+        rentalDays = days;
     }
+    
     public int getRentalDays(){
-        return this.rentalDays;
-    }
-
-    public float getFinalPrice(){
-        return this.totalCost;
+        return rentalDays;
     }
 
     public float getTotalCost(){
-        return this.totalCost;
+        return totalCost;
     }
     public void setTotalCost(int totalCost){
         this.totalCost = totalCost;
@@ -99,7 +102,7 @@ public class Renting implements Serializable {
     }
 
     public boolean getReturnLate(){
-        return this.returnLate;
+        return returnLate;
     }
 
     // Methods 

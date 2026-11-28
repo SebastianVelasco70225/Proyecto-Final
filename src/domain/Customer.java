@@ -8,26 +8,26 @@ public class Customer extends Person implements Serializable {
     private static final long serialVersionUID = 1L;
     
     // Atributes
-    private List<Renting> renting;
+    private List<Renting> rentings;
 
     // Constructor for adding a Customer without renting
     public Customer(int id,int age, String name, String adress){
         super(id,age,name,adress);
-        this.renting = new ArrayList<>();
+        this.rentings = new ArrayList<>();
     }
 
     // Constructor for adding a Customer with renting
     public Customer(int id, int age, String name, String adress, List<Renting> rentings){
         super(id,age,name,adress);
-        this.renting = (renting != null) ? renting : new ArrayList<>();
+        this.rentings = (rentings != null) ? rentings : new ArrayList<>();
     }
     
     // Getters and Setters
-    public List<Renting> getRenting() {
-        return renting;
+    public List<Renting> getRentings() {
+        return rentings;
     }
-    public void setRenting(List<Renting> renting) {
-        this.renting = renting;
+    public void addRenting(Renting renting) {
+        rentings.add(renting);
     }
 
 }

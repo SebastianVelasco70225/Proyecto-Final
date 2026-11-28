@@ -165,7 +165,7 @@ public class StoreMovie implements Serializable {
         if (outDays > renting.getRentalDays()){
             lateFee = renting.calculateLateFee(outDays);
             renting.setReturnLate(true);
-            renting.addLateFee(latefee);
+            renting.addLateFee(lateFee);
             
             int idVoucher = voucher.size() + 1;
             Voucher newVoucher = new Voucher(idVoucher, renting, lateFee);
@@ -173,7 +173,7 @@ public class StoreMovie implements Serializable {
         }
             renting.getMovie().setAvailable(true);
             renting.setState(false);
-            return latefee;
+            return lateFee;
     }
 
     //Method of search by id
@@ -236,6 +236,15 @@ public class StoreMovie implements Serializable {
             }
         }
         return rentingProximeToEnd;
+    }
+
+    // Report´s Methods
+    public void createReport(FilterOption option){
+        if(option==FilterOption.FINANCIERO){
+            Report report= new Report()
+        }
+
+
     }
     
     // Movie control methods
@@ -374,7 +383,7 @@ public class StoreMovie implements Serializable {
     public List<Movie> moviesWithOneCopie(){
         List<Movie> movies2=new ArrayList<>();
         for (Movie m: this.movies){
-            if(copiesAvailable2(m.getTitle())==1){
+            if(copiesAvailable2(m.getTitle())==1&&m.isAvailable()){
                 movies2.add(m);
             }
         }
@@ -401,7 +410,7 @@ public class StoreMovie implements Serializable {
             movies.remove(m);
         } 
         return;
-        } else if (option==FilterOption.ONEONLY){ 
+        } else if (option==FilterOption.ONE_ONLY){ 
         movie.switchActive();
         if(movie.isAvailable()){
             movies.remove(movie);
@@ -409,7 +418,7 @@ public class StoreMovie implements Serializable {
     }
     }
 
-    public List<Renting> filterbyCustomer(String name){
+    public List<Renting> filterByCustomer(String name){
 
         List<Renting> listTemporal = new ArrayList<>();
 
@@ -426,7 +435,7 @@ public class StoreMovie implements Serializable {
         return listTemporal;
     }
 
-    public List<Renting> filterbyReturnDay(int days){
+    public List<Renting> filterByReturnDay(int days){
         List<Renting> listTemporal = new ArrayList<>();
         for (Renting r : this.rentings){
             if (r.getRentalDays() == days){
@@ -494,6 +503,11 @@ public class StoreMovie implements Serializable {
         AVAILABLE,
         ALL,
         RENTING,
-        ONEONLY
+        ONE_ONLY,
+        FINANCIERO,
+        ALQUILERES,
+        DEVOLUCIONES,
+        INVENTARIO,
+        GENERAL
     }
 }

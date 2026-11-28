@@ -26,7 +26,7 @@ public class Report implements Serializable{
 
     // Method for creating a financial report
 
-    public Report createReportIncome(int id, List<Voucher> vouchers, Employee employee, LocalDate isDate){
+    public static Report createReportIncome(int id, List<Voucher> vouchers, Employee employee, LocalDate isDate){
 
         String title ="Reporte de ingresos";
         String type = "Financiero";
@@ -50,7 +50,7 @@ public class Report implements Serializable{
 
     // Method for creating a report of completed rentals
 
-    public Report createReportRenting(int id, List<Renting> rentings, Employee employee, LocalDate isDate) {
+    public static Report createReportRenting(int id, List<Renting> rentings, Employee employee, LocalDate isDate) {
 
         String title = "Reporte de alquileres";
         String type = "Alquileres";
@@ -75,7 +75,7 @@ public class Report implements Serializable{
 
     // Method for creating a report of inventary movie 
 
-    public Report createReportInventory(int id, List<Movie> movies, Employee employee, LocalDate  isDate){
+    public static Report createReportInventory(int id, List<Movie> movies, Employee employee, LocalDate  isDate){
 
         String title = "Reporte de inventario de películas";
         String type = "Inventario";
@@ -94,7 +94,7 @@ public class Report implements Serializable{
         return new Report(id, title, type, employee, sb.toString(), isDate);
     }
 
-    public Report createReport( int id, List<Renting> rentings, Employee employee, LocalDate isDate){
+    public static Report createReport( int id, List<Renting> rentings, Employee employee, LocalDate isDate){
         String title = "Reporte de devoluciones";
         String type = "Devoluciones";
 
@@ -112,7 +112,7 @@ public class Report implements Serializable{
             }
         }
 
-        return new Report(id, title, type, employee, sb.toString(),isDate);
+        return new Report(id, title, type, employee, sb.toString(), isDate);
     } 
 
     public int getId() {

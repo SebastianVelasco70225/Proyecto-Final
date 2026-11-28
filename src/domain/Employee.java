@@ -1,8 +1,11 @@
 package src.domain;
 
-public class Employee extends Person{
+import java.io.Serializable;
+
+public class Employee extends Person implements Serializable{
 
     // Atributes
+    public static final long serialVersionUID = 1L;
     private String charge;
     private StoreMovie movieStore;
     

@@ -1,5 +1,6 @@
 package src.domain;
 import java.io.Serializable;
+import java.time.LocalDate;
 
 public class Renting implements Serializable {
 
@@ -15,9 +16,12 @@ public class Renting implements Serializable {
     private boolean state;
     private float totalCost;
     private boolean returnLate;
+    private LocalDate startDate;
+    private LocalDate  expectedEndDate;
+    private LocalDate actualReturnDate;
 
     // Constructor
-    public Renting(StoreMovie storeMovie, Movie movie, int idAlquiler, ModelRent modelRent,Customer customer, int days) {
+    public Renting(StoreMovie storeMovie, Movie movie, int idAlquiler, ModelRent modelRent,Customer customer, int days, LocalDate startDateRenting) {
         if (movie == null || customer == null ){
             throw new IllegalArgumentException("Error: el cliente y la pelicula son obligatorios");
         }
@@ -41,6 +45,10 @@ public class Renting implements Serializable {
         setRentalDays(days);
         this.state = true;
         this.returnLate = false;
+        this.startDate = startDateRenting;
+        this.expectedEndDate = startDate.plusDays(days);
+        this.actualReturnDate = null;
+
 
         this.totalCost =this.rent.calculateTotalPrice(movie, days);
     }
@@ -90,7 +98,7 @@ public class Renting implements Serializable {
     public float getTotalCost(){
         return this.totalCost;
     }
-    public void setTotalCost(int totalCost){
+    public void setTotalCost(float totalCost){
         this.totalCost = totalCost;
     }
 
@@ -101,8 +109,33 @@ public class Renting implements Serializable {
     public boolean getReturnLate(){
         return this.returnLate;
     }
+    
 
     // Methods 
+
+    public LocalDate getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(LocalDate startDate) {
+        this.startDate = startDate;
+    }
+
+    public LocalDate getExpectedEndDate() {
+        return expectedEndDate;
+    }
+
+    public void setExpectedEndDate(LocalDate expectedEndDate) {
+        this.expectedEndDate = expectedEndDate;
+    }
+
+    public LocalDate getActualReturnDate() {
+        return actualReturnDate;
+    }
+
+    public void setActualReturnDate(LocalDate actualReturnDate) {
+        this.actualReturnDate = actualReturnDate;
+    }
 
     // Method for comprobing if a customer is able to rent a movie based on it´s age and movie´s pegi
     public boolean parentalControl(Customer customer, Movie movie){
@@ -114,7 +147,7 @@ public class Renting implements Serializable {
 
     // Method for extra price
     public float calculateLateFee(int days){
-        return this.rent.calculateLateFee(this, days);
+        return this.rent.calculateLateFee(days);
     }
 
     // Method for adding extra price

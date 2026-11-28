@@ -3,7 +3,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Customer extends Person implements Serializable {
+public class Customer extends Person implements Serializable{
 
     private static final long serialVersionUID = 1L;
     
@@ -19,7 +19,7 @@ public class Customer extends Person implements Serializable {
     // Constructor for adding a Customer with renting
     public Customer(int id, int age, String name, String adress, List<Renting> rentings){
         super(id,age,name,adress);
-        this.renting = (rentings != null) ? renting : new ArrayList<>();
+        this.renting = (rentings != null) ? rentings : new ArrayList<>();
     }
     
     // Getters and Setters

@@ -1,5 +1,6 @@
 package src.domain;
 import java.io.Serializable;
+import java.time.LocalDate;
 
 public class Voucher implements Serializable{
 
@@ -9,12 +10,16 @@ public class Voucher implements Serializable{
     private int id;
     private Renting renting;
     private float totalAmount;
+    private Employee employee;
+    private LocalDate isDate;
 
     // Constructor
-    public Voucher(int id, Renting renting, float totalAmount ){
+    public Voucher(int id, Renting renting, float totalAmount, Employee employee, LocalDate isDate ){
         setId(id);
         setRenting(renting);
         setTotalAmount(totalAmount);
+        setEmployee(employee);
+        setIsDate(isDate);
     }
 
     // Getters and Setters
@@ -41,6 +46,25 @@ public class Voucher implements Serializable{
     public void setTotalAmount(float totalAmount) {
         this.totalAmount = totalAmount;
     }
-    
+
+    public Employee getEmployee() {
+        return employee;
+    }
+
+    public LocalDate getIsDate() {
+        return isDate;
+    }
+
+    public void setIsDate(LocalDate isDate) {
+        this.isDate = isDate;
+    }
+
+    public void setEmployee(Employee employee) {
+
+        if (employee == null) {
+            throw new IllegalArgumentException("Error el empleado no ha sido cargado");
+        }
+        this.employee = employee;
+    }
     
 }

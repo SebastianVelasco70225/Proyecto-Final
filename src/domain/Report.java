@@ -1,5 +1,6 @@
 package src.domain;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.List;
 
 public class Report implements Serializable{
@@ -10,26 +11,28 @@ public class Report implements Serializable{
     private String content;
     private String type;
     private Employee employee;
+    private LocalDate isDate;
 
     // Constructor for creating manual report
 
-    public Report (int id, String title, String type, Employee employee, String content){
+    public Report (int id, String title, String type, Employee employee, String content, LocalDate isDate){
         setId(id);
         setTitle(title);
         setType(type);
         setEmployee(employee);
         setContent(content);
+        setIsDate(isDate);
     }
 
     // Method for creating a financial report
 
-    public static Report createReportIncome(int id, List<Voucher> vouchers, Employee employee){
+    public Report createReportIncome(int id, List<Voucher> vouchers, Employee employee, LocalDate isDate){
 
         String title ="Reporte de ingresos";
         String type = "Financiero";
 
         if (vouchers == null || vouchers.isEmpty()){
-            return new Report(id, title, type, employee, "No hay comprobantes registrados");
+            return new Report(id, title, type, employee, "No hay comprobantes registrados", isDate);
         }
         
         float totalIncome = 0;
@@ -42,18 +45,18 @@ public class Report implements Serializable{
         
         
 
-        return new Report(id, title, type,employee, content);
+        return new Report(id, title, type,employee, content, isDate);
     }
 
     // Method for creating a report of completed rentals
 
-    public static Report createReportRenting(int id, List<Renting> rentings, Employee employee) {
+    public Report createReportRenting(int id, List<Renting> rentings, Employee employee, LocalDate isDate) {
 
         String title = "Reporte de alquileres";
         String type = "Alquileres";
 
         if (rentings == null || rentings.isEmpty()){
-            return new Report(id, title, type , employee, "No hay alquileres registrados");
+            return new Report(id, title, type , employee, "No hay alquileres registrados", isDate);
         }
 
         StringBuilder sb = new StringBuilder();
@@ -67,18 +70,18 @@ public class Report implements Serializable{
             .append("\n");
         }
 
-        return new Report(id, title, type,  employee, sb.toString());
+        return new Report(id, title, type,  employee, sb.toString(), isDate);
     }
 
     // Method for creating a report of inventary movie 
 
-    public static Report createReportInventory(int id, List<Movie> movies, Employee employee){
+    public Report createReportInventory(int id, List<Movie> movies, Employee employee, LocalDate  isDate){
 
         String title = "Reporte de inventario de películas";
         String type = "Inventario";
 
         if (movies == null || movies.isEmpty()){
-            return new Report(id, title, type, employee, "No hay peliculas en el catalogo");
+            return new Report(id, title, type, employee, "No hay peliculas en el catalogo", isDate);
         }
 
         StringBuilder sb = new StringBuilder();
@@ -88,15 +91,15 @@ public class Report implements Serializable{
             .append("\n");
         }
 
-        return new Report(id, title, type, employee, sb.toString());
+        return new Report(id, title, type, employee, sb.toString(), isDate);
     }
 
-    public static Report createReport( int id, List<Renting> rentings, Employee employee){
+    public Report createReport( int id, List<Renting> rentings, Employee employee, LocalDate isDate){
         String title = "Reporte de devoluciones";
         String type = "Devoluciones";
 
         if (rentings == null || rentings.isEmpty()){
-            return new Report(id, title, type, employee, "No hay devolucciones por el momento");
+            return new Report(id, title, type, employee, "No hay devolucciones por el momento", isDate);
         }
         
         StringBuilder sb = new StringBuilder();
@@ -105,11 +108,16 @@ public class Report implements Serializable{
                 sb.append(" - El nombre de la persona es: ").append(r.getCustomer().getName())
                 .append(" - la cantidad que rento la pelicula es; ").append(r.getRentalDays())
                 .append("La pelicula que rento es: ").append(r.getMovie().getTitle())
-                .append("El costo toal es: ").append(r.getFinalPrice());
+                .append("El costo toal es: ").append(r.getFinalPrice())
+                .append("\n");;
             }
         }
 
-        return new Report(id, title, type, employee, sb.toString());
+        if(sb.length() == 0){
+            return new Report(id, title, type, employee, "No hay devoluciones por el momento", isDate);
+        }
+
+        return new Report(id, title, type, employee, sb.toString(), isDate);
     } 
 
     public int getId() {
@@ -150,6 +158,15 @@ public class Report implements Serializable{
 
     public void setEmployee(Employee employee) {
         this.employee = employee;
+    }
+    
+
+    public LocalDate getIsDate() {
+        return isDate;
+    }
+
+    public void setIsDate(LocalDate isDate) {
+        this.isDate = isDate;
     }
 
     @Override

@@ -459,7 +459,7 @@ public class StoreMovie implements Serializable {
     public List<Movie> moviesWithOneCopie(){
         List<Movie> movies2=new ArrayList<>();
         for (Movie m: this.movies){
-            if(copiesAvailable2(m.getTitle())==1&&m.isAvailable()){
+            if(copiesAvailable2(m.getTitle())== 1 && m.isAvailable()){
                 movies2.add(m);
             }
         }

@@ -26,7 +26,7 @@ public class Report implements Serializable{
 
     // Method for creating a financial report
 
-    public static Report createReportIncome(int id, List<Voucher> vouchers, Employee employee, LocalDate isDate){
+    public static Report createReportIncome(int id, List<Voucher> vouchers, Employee employee,LocalDate isDate){
 
         String title ="Reporte de ingresos";
         String type = "Financiero";
@@ -50,7 +50,7 @@ public class Report implements Serializable{
 
     // Method for creating a report of completed rentals
 
-    public static Report createReportRenting(int id, List<Renting> rentings, Employee employee, LocalDate isDate) {
+    public static Report createReportRenting(int id, List<Renting> rentings, Employee employee, LocalDate starDate, LocalDate endDate, LocalDate isDate) {
 
         String title = "Reporte de alquileres";
         String type = "Alquileres";
@@ -60,15 +60,20 @@ public class Report implements Serializable{
         }
 
         StringBuilder sb = new StringBuilder();
-
-        sb.append("Total de alquileres = ").append(rentings.size()).append("\n");
+        int count = 0;
+        sb.append(" - Periodo: ").append(starDate).append(" a ").append(endDate).append("\n");
 
         for (Renting r: rentings){
+
+            if (!r.getStartDate().isBefore(starDate) && !r.getStartDate().isAfter(endDate) ){
             sb.append("- ID: ").append(r.getIdRenting())
             .append(" | Cliente: ").append(r.getCustomer().getName())
             .append(" | Películas: ").append(r.getMovie().getTitle())
             .append("\n");
+            count += 1;
+            }
         }
+        sb.append("El numero total de alquileres en ese periodo es: ").append(count).append("\n");
 
         return new Report(id, title, type,  employee, sb.toString(), isDate);
     }
@@ -94,7 +99,7 @@ public class Report implements Serializable{
         return new Report(id, title, type, employee, sb.toString(), isDate);
     }
 
-    public static Report createReport( int id, List<Renting> rentings, Employee employee, LocalDate isDate){
+    public static Report createReportReturn( int id, List<Renting> rentings, Employee employee, LocalDate startDate, LocalDate endDate, LocalDate isDate){
         String title = "Reporte de devoluciones";
         String type = "Devoluciones";
 
@@ -103,15 +108,23 @@ public class Report implements Serializable{
         }
         
         StringBuilder sb = new StringBuilder();
+        int count = 0;
+        sb.append("- Periodo: ").append(startDate).append(" a ").append(endDate).append("\n");
+
         for (Renting r: rentings){
-            if (r.isState() == false){
-                sb.append(" - El nombre de la persona es: ").append(r.getCustomer().getName())
-                .append(" - la cantidad de días que rentó la película es; ").append(r.getRentalDays())
-                .append("La película que rentó es: ").append(r.getMovie().getTitle())
-                .append("El costo total es: ").append(r.getTotalCost());
+            if (r.isState() == false ){
+                if (r.getActualReturnDate() != null && !r.getActualReturnDate().isBefore(startDate) && !r.getActualReturnDate().isAfter(endDate)){
+                sb.append(" - El nombre de la persona fue: ").append(r.getCustomer().getName())
+                .append(" - la cantidad de días que rentó la película fue: ").append(r.getRentalDays())
+                .append(" - La película que rentó fue: ").append(r.getMovie().getTitle())
+                .append(" - El costo total fue: ").append(r.getTotalCost())
+                .append("\n");
+                count += 1;
+                }
             }
         }
-
+        
+        sb.append("- El total de devoluciones en el periodo fue: ").append(count).append("\n");
         return new Report(id, title, type, employee, sb.toString(), isDate);
     } 
 
